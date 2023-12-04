@@ -1,0 +1,506 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Staff {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  email     String
+  name      String?
+  phone     String?
+  avatar    String?
+  password  String
+}
+
+model User {
+  id                Int                @id @default(autoincrement())
+  createdAt         DateTime           @default(now())
+  email             String
+  name              String
+  phone             String?
+  avatar            String?
+  password          String?
+  rankId            Int?
+  rank              Rank?              @relation(fields: [rankId], references: [id])
+  notifications     NotificationUser[]
+  likeFeeds         LikeFeed[]
+  commentFeeds      CommentFeed[]
+  likeExams         LikeExam[]
+  commentExams      CommentExam[]
+  active            Active             @default(ACTIVE)
+  likeCommentExams LikeCommentExam[]
+  likeCommentFeeds LikeCommentFeed[]
+  @@index([id, email])
+}
+
+model Rank {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  name        String
+  description String?
+  rankIcon    String
+  users       User[]
+
+  @@index([id])
+}
+
+model Notification {
+  id            Int                @id @default(autoincrement())
+  createdAt     DateTime           @default(now())
+  title         String
+  content       String
+  notifications NotificationUser[]
+
+  @@index([id])
+}
+
+model NotificationUser {
+  id             Int          @id @default(autoincrement())
+  createdAt      DateTime     @default(now())
+  userId         Int
+  notificationId Int
+  user           User         @relation(fields: [userId], references: [id])
+  notification   Notification @relation(fields: [notificationId], references: [id])
+
+  @@index([id, userId])
+}
+
+model Feed {
+  id         Int           @id @default(autoincrement())
+  createdAt  DateTime      @default(now())
+  title      String
+  content    String
+  thumbnail  String
+  categoryId Int
+  active     Active        @default(ACTIVE)
+  category   CategoryFeed  @relation(fields: [categoryId], references: [id])
+  likes      LikeFeed[]
+  comments   CommentFeed[]
+
+  @@index([id])
+}
+
+model CategoryFeed {
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  name       String
+  color      String
+  background String
+  feeds      Feed[]
+
+  @@index([id])
+}
+
+model LikeFeed {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  userId    Int
+  feedId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  feed      Feed     @relation(fields: [feedId], references: [id])
+
+  @@index([userId, feedId])
+}
+
+model CommentFeed {
+  id            Int                @id @default(autoincrement())
+  createdAt     DateTime           @default(now())
+  userId        Int
+  feedId        Int
+  content       String
+  user          User               @relation(fields: [userId], references: [id])
+  feed          Feed               @relation(fields: [feedId], references: [id])
+  parentId      Int?
+  parentComment CommentFeed? @relation("ParentCommentFeed",fields: [parentId],references: [id])
+  childComments CommentFeed[] @relation("ParentCommentFeed")
+  likes LikeCommentFeed[]
+  @@index([userId, feedId])
+}
+
+model LikeCommentFeed {
+    id            Int                @id @default(autoincrement())
+    commentId Int
+    userId Int
+    user User @relation(fields: [userId], references:[id])
+    comment CommentFeed @relation(fields: [commentId], references:[id])
+}
+
+model Exam {
+  id           Int           @id @default(autoincrement())
+  createdAt    DateTime      @default(now())
+  audioUrl     String
+  breakPoints  Int[]
+  thumbnail    String
+  introduction String
+  numOfParts   Int
+  duration     Int
+  categoryId   Int
+  category     CategoryExam  @relation(fields: [categoryId], references: [id])
+  likes        LikeExam[]
+  comments     CommentExam[]
+  part1Id      Int
+  part2Id      Int
+  part3Id      Int
+  part4Id      Int
+  part5Id      Int
+  part6Id      Int
+  part7Id      Int
+  part1        Part1         @relation(fields: [part1Id], references: [id])
+  part2        Part2         @relation(fields: [part2Id], references: [id])
+  part3        Part3         @relation(fields: [part3Id], references: [id])
+  part4        Part4         @relation(fields: [part4Id], references: [id])
+  part5        Part5         @relation(fields: [part5Id], references: [id])
+  part6        Part6         @relation(fields: [part6Id], references: [id])
+  part7        Part7         @relation(fields: [part7Id], references: [id])
+
+  @@index([id])
+}
+
+model CategoryExam {
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  name       String
+  color      String
+  background String
+  exams      Exam[]
+
+  @@index([id])
+}
+
+model LikeExam {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  userId    Int
+  examId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  exam      Exam     @relation(fields: [examId], references: [id])
+
+  @@index([userId, examId])
+}
+
+model CommentExam {
+  id            Int                @id @default(autoincrement())
+  userId        Int
+  examId        Int
+  content       String
+  user          User               @relation(fields: [userId], references: [id])
+  exam          Exam               @relation(fields: [examId], references: [id])
+  parentId      Int?
+  parentComment CommentExam? @relation("ParentCommentExam",fields: [parentId],references: [id])
+  childComments CommentExam[] @relation("ParentCommentExam")
+  likes LikeCommentExam[]
+  @@index([userId, examId])
+}
+
+model LikeCommentExam {
+    id            Int                @id @default(autoincrement())
+    commentId Int
+    userId Int
+    user User @relation(fields: [userId], references:[id])
+    comment CommentExam @relation(fields: [commentId], references:[id])
+}
+
+model Part1 {
+  id             Int             @id @default(autoincrement())
+  thumbnail      String
+  introduction   String
+  numOfQuestions Int
+  duration       Int
+  exams          Exam[]
+  part1Questions Part1Question[]
+
+  @@index([id])
+}
+
+model Part1Question {
+  id         Int      @id @default(autoincrement())
+  audioUrl   String
+  imageUrls  String[]
+  questionId Int
+  part1Id    Int
+  topicId    Int      @unique
+  explainId  Int      @unique
+  part1      Part1    @relation(fields: [part1Id], references: [id])
+  question   Question @relation(fields: [questionId], references: [id])
+  topic      Topic    @relation(fields: [topicId], references: [id])
+  explain    Explain  @relation(fields: [explainId], references: [id])
+
+  @@index([id, part1Id])
+}
+
+model Part2 {
+  id             Int             @id @default(autoincrement())
+  createdAt      DateTime        @default(now())
+  thumbnail      String
+  introduction   String
+  numOfQuestions Int
+  duration       Int
+  exams          Exam[]
+  part2Questions Part2Question[]
+
+  @@index([id])
+}
+
+model Part2Question {
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  audioUrl   String
+  questionId Int
+  part2Id    Int
+  topicId    Int      @unique
+  explainId  Int      @unique
+  part2      Part2    @relation(fields: [part2Id], references: [id])
+  question   Question @relation(fields: [questionId], references: [id])
+  topic      Topic    @relation(fields: [topicId], references: [id])
+  explain    Explain  @relation(fields: [explainId], references: [id])
+
+  @@index([id, part2Id])
+}
+
+model Part3 {
+  id             Int             @id @default(autoincrement())
+  createdAt      DateTime        @default(now())
+  thumbnail      String
+  introduction   String
+  numOfQuestions Int
+  duration       Int
+  exams          Exam[]
+  part3Questions Part3Question[]
+
+  @@index([id])
+}
+
+model Part3Question {
+  id                  Int                    @id @default(autoincrement())
+  createdAt           DateTime               @default(now())
+  audioUrl            String
+  imageUrls           String[]
+  part3Id             Int
+  part3               Part3                  @relation(fields: [part3Id], references: [id])
+  groupPart3Questions MappingPart3Question[]
+  topicId             Int                    @unique
+  explainId           Int                    @unique
+  topic               Topic                  @relation(fields: [topicId], references: [id])
+  explain             Explain                @relation(fields: [explainId], references: [id])
+
+  @@index([id, part3Id])
+}
+
+model MappingPart3Question {
+  id              Int           @id @default(autoincrement())
+  createdAt       DateTime      @default(now())
+  part3QuestionId Int
+  questionId      Int
+  part3Question   Part3Question @relation(fields: [part3QuestionId], references: [id])
+  question        Question      @relation(fields: [questionId], references: [id])
+
+  @@index([part3QuestionId, questionId])
+}
+
+model Part4 {
+  id             Int             @id @default(autoincrement())
+  createdAt      DateTime        @default(now())
+  thumbnail      String
+  introduction   String
+  numOfQuestions Int
+  duration       Int
+  exams          Exam[]
+  part4Questions Part4Question[]
+
+  @@index([id])
+}
+
+model Part4Question {
+  id                  Int                    @id @default(autoincrement())
+  createdAt           DateTime               @default(now())
+  audioUrl            String
+  imageUrls           String[]
+  part4Id             Int
+  part4               Part4                  @relation(fields: [part4Id], references: [id])
+  groupPart4Questions MappingPart4Question[]
+  topicId             Int                    @unique
+  explainId           Int                    @unique
+  topic               Topic                  @relation(fields: [topicId], references: [id])
+  explain             Explain                @relation(fields: [explainId], references: [id])
+
+  @@index([id, part4Id])
+}
+
+model MappingPart4Question {
+  id              Int           @id @default(autoincrement())
+  createdAt       DateTime      @default(now())
+  part4QuestionId Int
+  questionId      Int
+  part4Question   Part4Question @relation(fields: [part4QuestionId], references: [id])
+  question        Question      @relation(fields: [questionId], references: [id])
+
+  @@index([part4QuestionId, questionId])
+}
+
+model Part5 {
+  id             Int             @id @default(autoincrement())
+  createdAt      DateTime        @default(now())
+  thumbnail      String
+  introduction   String
+  numOfQuestions Int
+  duration       Int
+  exams          Exam[]
+  part5Questions Part5Question[]
+
+  @@index([id])
+}
+
+model Part5Question {
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  part5Id    Int
+  questionId Int
+  part5      Part5    @relation(fields: [part5Id], references: [id])
+  question   Question @relation(fields: [questionId], references: [id])
+  topicId    Int      @unique
+  explainId  Int      @unique
+  topic      Topic    @relation(fields: [topicId], references: [id])
+  explain    Explain  @relation(fields: [explainId], references: [id])
+
+  @@index([part5Id, questionId])
+}
+
+model Part6 {
+  id             Int             @id @default(autoincrement())
+  createdAt      DateTime        @default(now())
+  thumbnail      String
+  introduction   String
+  numOfQuestions Int
+  duration       Int
+  exams          Exam[]
+  part6Questions Part6Question[]
+
+  @@index([id])
+}
+
+model Part6Question {
+  id                  Int                    @id @default(autoincrement())
+  createdAt           DateTime               @default(now())
+  imageUrls           String[]
+  part6Id             Int
+  part6               Part6                  @relation(fields: [part6Id], references: [id])
+  groupPart6Questions MappingPart6Question[]
+  topicId             Int                    @unique
+  explainId           Int                    @unique
+  topic               Topic                  @relation(fields: [topicId], references: [id])
+  explain             Explain                @relation(fields: [explainId], references: [id])
+
+  @@index([id, part6Id])
+}
+
+model MappingPart6Question {
+  id              Int           @id @default(autoincrement())
+  createdAt       DateTime      @default(now())
+  part6QuestionId Int
+  questionId      Int
+  part6Question   Part6Question @relation(fields: [part6QuestionId], references: [id])
+  question        Question      @relation(fields: [questionId], references: [id])
+
+  @@index([questionId, part6QuestionId])
+}
+
+model Part7 {
+  id             Int             @id @default(autoincrement())
+  createdAt      DateTime        @default(now())
+  thumbnail      String
+  introduction   String
+  numOfQuestions Int
+  duration       Int
+  exams          Exam[]
+  part7Question  Part7Question[]
+
+  @@index([id])
+}
+
+model Part7Question {
+  id                  Int                    @id @default(autoincrement())
+  createdAt           DateTime               @default(now())
+  imageUrls           String[]
+  part7Id             Int
+  part7               Part7                  @relation(fields: [part7Id], references: [id])
+  groupPart7Questions MappingPart7Question[]
+  topicId             Int                    @unique
+  explainId           Int                    @unique
+  topic               Topic                  @relation(fields: [topicId], references: [id])
+  explain             Explain                @relation(fields: [explainId], references: [id])
+
+  @@index([id, part7Id])
+}
+
+model MappingPart7Question {
+  id              Int           @id @default(autoincrement())
+  createdAt       DateTime      @default(now())
+  part7QuestionId Int
+  questionId      Int
+  part7Question   Part7Question @relation(fields: [part7QuestionId], references: [id])
+  question        Question      @relation(fields: [questionId], references: [id])
+
+  @@index([part7QuestionId, questionId])
+}
+
+model Question {
+  id             Int                    @id @default(autoincrement())
+  createdAt      DateTime               @default(now())
+  content        String
+  optionA        String?
+  optionB        String?
+  optionC        String?
+  optionD        String?
+  part1Questions Part1Question[]
+  part2Questions Part2Question[]
+  part3Questions MappingPart3Question[]
+  part4Questions MappingPart4Question[]
+  part5Questions Part5Question[]
+  part6Questions MappingPart6Question[]
+  part7Questions MappingPart7Question[]
+
+  @@index([id])
+}
+
+model Topic {
+  id            Int            @id @default(autoincrement())
+  name          String
+  Part1Question Part1Question?
+  Part2Question Part2Question?
+  Part3Question Part3Question?
+  Part4Question Part4Question?
+  Part5Question Part5Question?
+  Part6Question Part6Question?
+  Part7Question Part7Question?
+}
+
+model Explain {
+  id            Int            @id @default(autoincrement())
+  explain       String
+  images        String
+  answer        Answer
+  Part1Question Part1Question?
+  Part2Question Part2Question?
+  Part3Question Part3Question?
+  Part4Question Part4Question?
+  Part5Question Part5Question?
+  Part6Question Part6Question?
+  Part7Question Part7Question?
+}
+
+enum Answer {
+  A
+  B
+  C
+  D
+}
+
+enum Active {
+  ACTIVE
+  INACTIVE
+}
