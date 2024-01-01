@@ -18,23 +18,25 @@ model Staff {
 }
 
 model User {
-  id                Int                @id @default(autoincrement())
-  createdAt         DateTime           @default(now())
-  email             String
-  name              String
-  phone             String?
-  avatar            String?
-  password          String?
-  rankId            Int?
-  rank              Rank?              @relation(fields: [rankId], references: [id])
-  notifications     NotificationUser[]
-  likeFeeds         LikeFeed[]
-  commentFeeds      CommentFeed[]
-  likeExams         LikeExam[]
-  commentExams      CommentExam[]
-  active            Active             @default(ACTIVE)
+  id               Int                @id @default(autoincrement())
+  createdAt        DateTime           @default(now())
+  email            String
+  name             String
+  phone            String?
+  avatar           String?
+  password         String?
+  rankId           Int?
+  authFrom          AuthFrom @default(TRANDITIONAL)
+  rank             Rank?              @relation(fields: [rankId], references: [id])
+  notifications    NotificationUser[]
+  likeFeeds        LikeFeed[]
+  commentFeeds     CommentFeed[]
+  likeExams        LikeExam[]
+  commentExams     CommentExam[]
+  active           Active             @default(ACTIVE)
   likeCommentExams LikeCommentExam[]
   likeCommentFeeds LikeCommentFeed[]
+
   @@index([id, email])
 }
 
@@ -108,26 +110,27 @@ model LikeFeed {
 }
 
 model CommentFeed {
-  id            Int                @id @default(autoincrement())
-  createdAt     DateTime           @default(now())
+  id            Int               @id @default(autoincrement())
+  createdAt     DateTime          @default(now())
   userId        Int
   feedId        Int
   content       String
-  user          User               @relation(fields: [userId], references: [id])
-  feed          Feed               @relation(fields: [feedId], references: [id])
+  user          User              @relation(fields: [userId], references: [id])
+  feed          Feed              @relation(fields: [feedId], references: [id])
   parentId      Int?
-  parentComment CommentFeed? @relation("ParentCommentFeed",fields: [parentId],references: [id])
-  childComments CommentFeed[] @relation("ParentCommentFeed")
-  likes LikeCommentFeed[]
+  parentComment CommentFeed?      @relation("ParentCommentFeed", fields: [parentId], references: [id])
+  childComments CommentFeed[]     @relation("ParentCommentFeed")
+  likes         LikeCommentFeed[]
+
   @@index([userId, feedId])
 }
 
 model LikeCommentFeed {
-    id            Int                @id @default(autoincrement())
-    commentId Int
-    userId Int
-    user User @relation(fields: [userId], references:[id])
-    comment CommentFeed @relation(fields: [commentId], references:[id])
+  id        Int         @id @default(autoincrement())
+  commentId Int
+  userId    Int
+  user      User        @relation(fields: [userId], references: [id])
+  comment   CommentFeed @relation(fields: [commentId], references: [id])
 }
 
 model Exam {
@@ -136,6 +139,7 @@ model Exam {
   audioUrl     String
   breakPoints  Int[]
   thumbnail    String
+  title        String
   introduction String
   numOfParts   Int
   duration     Int
@@ -184,25 +188,26 @@ model LikeExam {
 }
 
 model CommentExam {
-  id            Int                @id @default(autoincrement())
+  id            Int               @id @default(autoincrement())
   userId        Int
   examId        Int
   content       String
-  user          User               @relation(fields: [userId], references: [id])
-  exam          Exam               @relation(fields: [examId], references: [id])
+  user          User              @relation(fields: [userId], references: [id])
+  exam          Exam              @relation(fields: [examId], references: [id])
   parentId      Int?
-  parentComment CommentExam? @relation("ParentCommentExam",fields: [parentId],references: [id])
-  childComments CommentExam[] @relation("ParentCommentExam")
-  likes LikeCommentExam[]
+  parentComment CommentExam?      @relation("ParentCommentExam", fields: [parentId], references: [id])
+  childComments CommentExam[]     @relation("ParentCommentExam")
+  likes         LikeCommentExam[]
+
   @@index([userId, examId])
 }
 
 model LikeCommentExam {
-    id            Int                @id @default(autoincrement())
-    commentId Int
-    userId Int
-    user User @relation(fields: [userId], references:[id])
-    comment CommentExam @relation(fields: [commentId], references:[id])
+  id        Int         @id @default(autoincrement())
+  commentId Int
+  userId    Int
+  user      User        @relation(fields: [userId], references: [id])
+  comment   CommentExam @relation(fields: [commentId], references: [id])
 }
 
 model Part1 {
@@ -503,4 +508,9 @@ enum Answer {
 enum Active {
   ACTIVE
   INACTIVE
+}
+
+enum AuthFrom {
+  GOOGLE
+  TRANDITIONAL
 }

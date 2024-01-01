@@ -10,6 +10,7 @@ import { environments } from './environments';
 import { join } from 'path';
 import { FeedModule } from './feed/feed.module';
 import { CategoryFeedModule } from './category-feed/category-feed.module';
+import { ExamModule } from './exam/exam.module';
 @Module({
   imports: [
     PrismaModule,
@@ -30,6 +31,7 @@ import { CategoryFeedModule } from './category-feed/category-feed.module';
     }),
     FeedModule,
     CategoryFeedModule,
+    ExamModule,
   ],
   controllers: [AppController],
   providers: [AppService],

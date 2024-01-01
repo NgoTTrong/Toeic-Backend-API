@@ -7,11 +7,14 @@ import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { AuthFrom } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
+    private readonly prismaService: PrismaService,
     private readonly jwtService: JwtService,
     private readonly mailerService: MailerService,
   ) {}
@@ -108,6 +111,68 @@ export class AuthService {
       },
     });
     return 'Oke';
+  }
+  async googleLogin(req: any) {
+    if (!req.user) {
+      throw new BadRequestException('No User from google');
+    }
+    const _user = await this.userService.findByEmail(req.user.email);
+    if (_user) {
+      return {
+        user: _user,
+        acessToken: await this.jwtService.signAsync(
+          {
+            avatar: _user.avatar,
+            email: _user.email,
+            id: _user.id,
+            name: _user.name,
+            phone: _user.phone,
+          },
+          this.getAccessTokenOptions(),
+        ),
+        refreshToken: await this.jwtService.signAsync(
+          {
+            avatar: _user.avatar,
+            email: _user.email,
+            id: _user.id,
+            name: _user.name,
+            phone: _user.phone,
+          },
+          this.getRefreshTokenOptions(),
+        ),
+      };
+    }
+    const newUser = await this.prismaService.user.create({
+      data: {
+        email: req.user.email,
+        name: req.user.name,
+        avatar: req.user.avatar,
+        authFrom: AuthFrom.GOOGLE,
+      },
+    });
+    return {
+      user: newUser,
+      acessToken: await this.jwtService.signAsync(
+        {
+          avatar: newUser.avatar,
+          email: newUser.email,
+          id: newUser.id,
+          name: newUser.name,
+          phone: newUser.phone,
+        },
+        this.getAccessTokenOptions(),
+      ),
+      refreshToken: await this.jwtService.signAsync(
+        {
+          avatar: newUser.avatar,
+          email: newUser.email,
+          id: newUser.id,
+          name: newUser.name,
+          phone: newUser.phone,
+        },
+        this.getRefreshTokenOptions(),
+      ),
+    };
   }
   getAccessTokenOptions(): JwtSignOptions {
     return this.getTokenOptions('access');

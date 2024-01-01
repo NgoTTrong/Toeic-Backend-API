@@ -10,5 +10,7 @@ export const environments = {
   accessTokenExpiration: env.JWT_ACCESS_TOKEN_EXPIRATION,
   refreshTokenSecret: env.JWT_REFRESH_TOKEN_SECERT,
   refreshTokenExpiration: env.JWT_REFRESH_TOKEN_EXPIRATION,
+  clientId: env.CLIENT_ID,
+  clientSecret: env.CLIENT_SECRET,
   transport: env.TRANSPORT,
 };

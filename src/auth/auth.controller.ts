@@ -6,6 +6,8 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
@@ -15,6 +17,7 @@ import { Payload } from 'src/core/type/jwt.payload';
 import { LoginDto } from './dto/login.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { UpdateUserDto } from 'src/user/dto/update-user.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController {
@@ -22,6 +25,18 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly userService: UserService,
   ) {}
+
+  @Get('google')
+  @Public()
+  @UseGuards(AuthGuard('google'))
+  async googleAuth(@Req() req) {}
+
+  @Get('google/redirect')
+  @Public()
+  @UseGuards(AuthGuard('google'))
+  googleAuthRedirect(@Req() req) {
+    return this.authService.googleLogin(req);
+  }
 
   @Post('register')
   @Public()

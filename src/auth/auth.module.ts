@@ -5,6 +5,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './guard/auth.guard';
 import { UserService } from 'src/user/user.service';
 import { JwtService } from '@nestjs/jwt';
+import { GoogleStrategy } from './google.strategy';
 
 @Module({
   controllers: [AuthController],
@@ -12,6 +13,7 @@ import { JwtService } from '@nestjs/jwt';
     AuthService,
     UserService,
     JwtService,
+    GoogleStrategy,
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
