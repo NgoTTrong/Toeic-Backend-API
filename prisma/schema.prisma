@@ -26,7 +26,7 @@ model User {
   avatar           String?
   password         String?
   rankId           Int?
-  authFrom          AuthFrom @default(TRANDITIONAL)
+  authFrom         AuthFrom           @default(TRANDITIONAL)
   rank             Rank?              @relation(fields: [rankId], references: [id])
   notifications    NotificationUser[]
   likeFeeds        LikeFeed[]
@@ -36,6 +36,7 @@ model User {
   active           Active             @default(ACTIVE)
   likeCommentExams LikeCommentExam[]
   likeCommentFeeds LikeCommentFeed[]
+  Explain          Explain[]
 
   @@index([id, email])
 }
@@ -215,7 +216,7 @@ model Part1 {
   thumbnail      String
   introduction   String
   numOfQuestions Int
-  duration       Int
+  duration       Int?
   exams          Exam[]
   part1Questions Part1Question[]
 
@@ -228,12 +229,12 @@ model Part1Question {
   imageUrls  String[]
   questionId Int
   part1Id    Int
-  topicId    Int      @unique
-  explainId  Int      @unique
+  topicId    Int?     @unique
+  explainId  Int?     @unique
   part1      Part1    @relation(fields: [part1Id], references: [id])
   question   Question @relation(fields: [questionId], references: [id])
-  topic      Topic    @relation(fields: [topicId], references: [id])
-  explain    Explain  @relation(fields: [explainId], references: [id])
+  topic      Topic?   @relation(fields: [topicId], references: [id])
+  explain    Explain? @relation(fields: [explainId], references: [id])
 
   @@index([id, part1Id])
 }
@@ -244,7 +245,7 @@ model Part2 {
   thumbnail      String
   introduction   String
   numOfQuestions Int
-  duration       Int
+  duration       Int?
   exams          Exam[]
   part2Questions Part2Question[]
 
@@ -257,12 +258,12 @@ model Part2Question {
   audioUrl   String
   questionId Int
   part2Id    Int
-  topicId    Int      @unique
-  explainId  Int      @unique
+  topicId    Int?     @unique
+  explainId  Int?     @unique
   part2      Part2    @relation(fields: [part2Id], references: [id])
   question   Question @relation(fields: [questionId], references: [id])
-  topic      Topic    @relation(fields: [topicId], references: [id])
-  explain    Explain  @relation(fields: [explainId], references: [id])
+  topic      Topic?   @relation(fields: [topicId], references: [id])
+  explain    Explain? @relation(fields: [explainId], references: [id])
 
   @@index([id, part2Id])
 }
@@ -273,7 +274,7 @@ model Part3 {
   thumbnail      String
   introduction   String
   numOfQuestions Int
-  duration       Int
+  duration       Int?
   exams          Exam[]
   part3Questions Part3Question[]
 
@@ -288,22 +289,21 @@ model Part3Question {
   part3Id             Int
   part3               Part3                  @relation(fields: [part3Id], references: [id])
   groupPart3Questions MappingPart3Question[]
-  topicId             Int                    @unique
-  explainId           Int                    @unique
-  topic               Topic                  @relation(fields: [topicId], references: [id])
-  explain             Explain                @relation(fields: [explainId], references: [id])
+  topicId             Int?                   @unique
+  explainId           Int?                   @unique
+  topic               Topic?                 @relation(fields: [topicId], references: [id])
+  explain             Explain?               @relation(fields: [explainId], references: [id])
 
   @@index([id, part3Id])
 }
 
 model MappingPart3Question {
-  id              Int           @id @default(autoincrement())
-  createdAt       DateTime      @default(now())
   part3QuestionId Int
   questionId      Int
   part3Question   Part3Question @relation(fields: [part3QuestionId], references: [id])
   question        Question      @relation(fields: [questionId], references: [id])
 
+  @@id([part3QuestionId, questionId])
   @@index([part3QuestionId, questionId])
 }
 
@@ -313,7 +313,7 @@ model Part4 {
   thumbnail      String
   introduction   String
   numOfQuestions Int
-  duration       Int
+  duration       Int?
   exams          Exam[]
   part4Questions Part4Question[]
 
@@ -328,22 +328,21 @@ model Part4Question {
   part4Id             Int
   part4               Part4                  @relation(fields: [part4Id], references: [id])
   groupPart4Questions MappingPart4Question[]
-  topicId             Int                    @unique
-  explainId           Int                    @unique
-  topic               Topic                  @relation(fields: [topicId], references: [id])
-  explain             Explain                @relation(fields: [explainId], references: [id])
+  topicId             Int?                   @unique
+  explainId           Int?                   @unique
+  topic               Topic?                 @relation(fields: [topicId], references: [id])
+  explain             Explain?               @relation(fields: [explainId], references: [id])
 
   @@index([id, part4Id])
 }
 
 model MappingPart4Question {
-  id              Int           @id @default(autoincrement())
-  createdAt       DateTime      @default(now())
   part4QuestionId Int
   questionId      Int
   part4Question   Part4Question @relation(fields: [part4QuestionId], references: [id])
   question        Question      @relation(fields: [questionId], references: [id])
 
+  @@id([questionId, part4QuestionId])
   @@index([part4QuestionId, questionId])
 }
 
@@ -353,7 +352,7 @@ model Part5 {
   thumbnail      String
   introduction   String
   numOfQuestions Int
-  duration       Int
+  duration       Int?
   exams          Exam[]
   part5Questions Part5Question[]
 
@@ -367,10 +366,10 @@ model Part5Question {
   questionId Int
   part5      Part5    @relation(fields: [part5Id], references: [id])
   question   Question @relation(fields: [questionId], references: [id])
-  topicId    Int      @unique
-  explainId  Int      @unique
-  topic      Topic    @relation(fields: [topicId], references: [id])
-  explain    Explain  @relation(fields: [explainId], references: [id])
+  topicId    Int?     @unique
+  explainId  Int?     @unique
+  topic      Topic?   @relation(fields: [topicId], references: [id])
+  explain    Explain? @relation(fields: [explainId], references: [id])
 
   @@index([part5Id, questionId])
 }
@@ -381,7 +380,7 @@ model Part6 {
   thumbnail      String
   introduction   String
   numOfQuestions Int
-  duration       Int
+  duration       Int?
   exams          Exam[]
   part6Questions Part6Question[]
 
@@ -395,22 +394,21 @@ model Part6Question {
   part6Id             Int
   part6               Part6                  @relation(fields: [part6Id], references: [id])
   groupPart6Questions MappingPart6Question[]
-  topicId             Int                    @unique
-  explainId           Int                    @unique
-  topic               Topic                  @relation(fields: [topicId], references: [id])
-  explain             Explain                @relation(fields: [explainId], references: [id])
+  topicId             Int?                   @unique
+  explainId           Int?                   @unique
+  topic               Topic?                 @relation(fields: [topicId], references: [id])
+  explain             Explain?               @relation(fields: [explainId], references: [id])
 
   @@index([id, part6Id])
 }
 
 model MappingPart6Question {
-  id              Int           @id @default(autoincrement())
-  createdAt       DateTime      @default(now())
   part6QuestionId Int
   questionId      Int
   part6Question   Part6Question @relation(fields: [part6QuestionId], references: [id])
   question        Question      @relation(fields: [questionId], references: [id])
 
+  @@id([part6QuestionId, questionId])
   @@index([questionId, part6QuestionId])
 }
 
@@ -420,7 +418,7 @@ model Part7 {
   thumbnail      String
   introduction   String
   numOfQuestions Int
-  duration       Int
+  duration       Int?
   exams          Exam[]
   part7Question  Part7Question[]
 
@@ -434,22 +432,21 @@ model Part7Question {
   part7Id             Int
   part7               Part7                  @relation(fields: [part7Id], references: [id])
   groupPart7Questions MappingPart7Question[]
-  topicId             Int                    @unique
-  explainId           Int                    @unique
-  topic               Topic                  @relation(fields: [topicId], references: [id])
-  explain             Explain                @relation(fields: [explainId], references: [id])
+  topicId             Int?                   @unique
+  explainId           Int?                   @unique
+  topic               Topic?                 @relation(fields: [topicId], references: [id])
+  explain             Explain?               @relation(fields: [explainId], references: [id])
 
   @@index([id, part7Id])
 }
 
 model MappingPart7Question {
-  id              Int           @id @default(autoincrement())
-  createdAt       DateTime      @default(now())
   part7QuestionId Int
   questionId      Int
   part7Question   Part7Question @relation(fields: [part7QuestionId], references: [id])
   question        Question      @relation(fields: [questionId], references: [id])
 
+  @@id([part7QuestionId, questionId])
   @@index([part7QuestionId, questionId])
 }
 
@@ -482,13 +479,17 @@ model Topic {
   Part5Question Part5Question?
   Part6Question Part6Question?
   Part7Question Part7Question?
+
+  @@index([id])
 }
 
 model Explain {
   id            Int            @id @default(autoincrement())
   explain       String
-  images        String
+  images        String[]
   answer        Answer
+  userId        Int?
+  user          User?          @relation(references: [id], fields: [userId])
   Part1Question Part1Question?
   Part2Question Part2Question?
   Part3Question Part3Question?
@@ -496,6 +497,8 @@ model Explain {
   Part5Question Part5Question?
   Part6Question Part6Question?
   Part7Question Part7Question?
+
+  @@index([id])
 }
 
 enum Answer {
