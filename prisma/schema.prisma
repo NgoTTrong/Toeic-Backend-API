@@ -7,16 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Staff {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  email     String
-  name      String?
-  phone     String?
-  avatar    String?
-  password  String
-}
-
 model User {
   id               Int                @id @default(autoincrement())
   createdAt        DateTime           @default(now())
@@ -37,6 +27,7 @@ model User {
   likeCommentExams LikeCommentExam[]
   likeCommentFeeds LikeCommentFeed[]
   Explain          Explain[]
+  Feed             Feed[]
 
   @@index([id, email])
 }
@@ -84,6 +75,8 @@ model Feed {
   category   CategoryFeed  @relation(fields: [categoryId], references: [id])
   likes      LikeFeed[]
   comments   CommentFeed[]
+  userId     Int
+  user       User          @relation(fields: [userId], references: [id])
 
   @@index([id])
 }
@@ -499,6 +492,81 @@ model Explain {
   Part7Question Part7Question?
 
   @@index([id])
+}
+
+model Course {
+  id          Int             @id @default(autoincrement())
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  userId      Int
+  title       String
+  description String?
+  imageUrl    String?
+  price       Float?
+  isPublished Boolean         @default(false)
+  categoryId  Int?
+  category    CategoryCourse? @relation(fields: [categoryId], references: [id])
+  attachments Attachment[]
+  chapters     Chapter[]
+}
+
+model Attachment {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String
+  url       String
+  courseId  Int
+  course    Course   @relation(fields: [courseId], references: [id])
+
+  @@index([courseId])
+}
+
+model CategoryCourse {
+  id      Int      @id @default(autoincrement())
+  name    String   @unique
+  courses Course[]
+}
+
+model Chapter {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  title       String
+  description String?
+  videoUrl    String?
+  position    Int
+  isPublished Boolean  @default(false)
+  isFree      Boolean  @default(false)
+
+  muxData      MuxData?
+  courseId     Int
+  course       Course         @relation(fields: [courseId], references: [id])
+  userProgress UserProgress[]
+
+  @@index([courseId])
+}
+
+model MuxData {
+  id         Int     @id @default(autoincrement())
+  chapterId  Int     @unique
+  assetId    String
+  playbackId String?
+
+  chapter Chapter @relation(fields: [chapterId], references: [id])
+}
+
+model UserProgress {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isCompleted Boolean @default(false)
+  chapter   Chapter @relation(fields: [chapterId], references: [id])
+  chapterId Int
+  userId Int
+
+  @@index([chapterId])
+  @@unique([userId, chapterId])
 }
 
 enum Answer {

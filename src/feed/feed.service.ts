@@ -7,9 +7,9 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class FeedService {
   constructor(private prismaService: PrismaService) {}
 
-  create(createFeedDto: CreateFeedDto) {
+  create(createFeedDto: CreateFeedDto, userId: number) {
     return this.prismaService.feed.create({
-      data: createFeedDto,
+      data: { ...createFeedDto, userId },
     });
   }
 

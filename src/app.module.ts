@@ -18,6 +18,8 @@ import { Part4Module } from './part4/part4.module';
 import { Part5Module } from './part5/part5.module';
 import { Part6Module } from './part6/part6.module';
 import { Part7Module } from './part7/part7.module';
+import { CourseModule } from './course/course.module';
+import { CategoryCourseModule } from './category-course/category-course.module';
 @Module({
   imports: [
     PrismaModule,
@@ -46,6 +48,8 @@ import { Part7Module } from './part7/part7.module';
     Part5Module,
     Part6Module,
     Part7Module,
+    CourseModule,
+    CategoryCourseModule,
   ],
   controllers: [AppController],
   providers: [AppService],
