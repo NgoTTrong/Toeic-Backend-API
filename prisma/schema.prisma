@@ -1,10 +1,11 @@
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 model User {
@@ -28,6 +29,7 @@ model User {
   likeCommentFeeds LikeCommentFeed[]
   Explain          Explain[]
   Feed             Feed[]
+  Payment          Payment[]
 
   @@index([id, email])
 }
@@ -112,11 +114,13 @@ model CommentFeed {
   user          User              @relation(fields: [userId], references: [id])
   feed          Feed              @relation(fields: [feedId], references: [id])
   parentId      Int?
-  parentComment CommentFeed?      @relation("ParentCommentFeed", fields: [parentId], references: [id])
+  parentComment CommentFeed?      @relation("ParentCommentFeed", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   childComments CommentFeed[]     @relation("ParentCommentFeed")
   likes         LikeCommentFeed[]
 
   @@index([userId, feedId])
+  @@index([feedId])
+  @@index([parentId])
 }
 
 model LikeCommentFeed {
@@ -507,7 +511,10 @@ model Course {
   categoryId  Int?
   category    CategoryCourse? @relation(fields: [categoryId], references: [id])
   attachments Attachment[]
-  chapters     Chapter[]
+  chapters    Chapter[]
+  payment     Payment[]
+
+  @@index([categoryId])
 }
 
 model Attachment {
@@ -517,7 +524,7 @@ model Attachment {
   name      String
   url       String
   courseId  Int
-  course    Course   @relation(fields: [courseId], references: [id])
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   @@index([courseId])
 }
@@ -539,34 +546,34 @@ model Chapter {
   isPublished Boolean  @default(false)
   isFree      Boolean  @default(false)
 
-  muxData      MuxData?
   courseId     Int
-  course       Course         @relation(fields: [courseId], references: [id])
+  course       Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
   userProgress UserProgress[]
 
   @@index([courseId])
 }
 
-model MuxData {
-  id         Int     @id @default(autoincrement())
-  chapterId  Int     @unique
-  assetId    String
-  playbackId String?
-
-  chapter Chapter @relation(fields: [chapterId], references: [id])
+model Payment {
+  id       Int    @id @default(autoincrement())
+  userId   Int
+  courseId Int
+  course   Course @relation(fields: [courseId], references: [id])
+  user     User   @relation(fields: [userId], references: [id])
+  @@unique([userId, courseId])
+  @@index([courseId])
 }
 
 model UserProgress {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  isCompleted Boolean @default(false)
-  chapter   Chapter @relation(fields: [chapterId], references: [id])
-  chapterId Int
-  userId Int
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  isCompleted Boolean  @default(false)
+  chapter     Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chapterId   Int
+  userId      Int
 
-  @@index([chapterId])
   @@unique([userId, chapterId])
+  @@index([chapterId])
 }
 
 enum Answer {

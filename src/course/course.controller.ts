@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { CourseService } from './course.service';
 import { CreateCourseDto } from './dto/create-course.dto';
@@ -14,6 +15,7 @@ import { GetUser, Public } from 'src/core/decorators';
 import { Payload } from 'src/core/type/jwt.payload';
 import { AttachmentCourseDto } from './dto/attachment-course.dto';
 import { ChapterDto } from './dto/chapter.dto';
+import { ReorderDto } from './dto/reorder.dto';
 
 @Controller('course')
 export class CourseController {
@@ -25,10 +27,33 @@ export class CourseController {
     return this.courseService.create(createCourseDto, 1);
   }
 
-  @Get()
+  @Get('/get-all-of-user')
   @Public()
   findAll() {
-    return this.courseService.findAll();
+    return this.courseService.findAllCourseOfUser(1);
+  }
+
+  @Get('all/:userId')
+  @Public()
+  getAllByUser(
+    @Param('userId') userId: number,
+    @Query('categoryId') categoryId: number,
+    @Query('title') title: string,
+  ) {
+    return this.courseService.getAllCoursesByUserId(
+      Number(userId),
+      categoryId ? Number(categoryId) : undefined,
+      title,
+    );
+  }
+
+  @Get('by-user/:courseId')
+  @Public()
+  getCourseByUser(
+    @Param('courseId') courseId: number,
+    @Query('userId') userId: number,
+  ) {
+    return this.courseService.findOneByUser(+courseId, Number(userId));
   }
 
   @Get(':id')
@@ -54,6 +79,11 @@ export class CourseController {
   @Public()
   addChapter(@Param('id') id: string, @Body() chapter: ChapterDto) {
     return this.courseService.addChapter(+id, chapter);
+  }
+  @Post(':id/chapters/reorder')
+  @Public()
+  reorderChapter(@Param('id') id: string, @Body() reorderDto: ReorderDto) {
+    return this.courseService.reorderChapters(+id, reorderDto.reorderData);
   }
   @Delete(':id')
   @Public()
