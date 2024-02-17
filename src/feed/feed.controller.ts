@@ -24,8 +24,8 @@ export class FeedController {
   constructor(private readonly feedService: FeedService) {}
 
   @Post()
-  create(@Body() createFeedDto: CreateFeedDto) {
-    return this.feedService.create(createFeedDto);
+  create(@Body() createFeedDto: CreateFeedDto, @GetUser() user: Payload) {
+    return this.feedService.create(createFeedDto, user?.id);
   }
 
   @Get()

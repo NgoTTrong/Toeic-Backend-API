@@ -10,7 +10,7 @@ async function bootstrap() {
   });
 
   await app.listen(environments.port || 3001, () =>
-    console.log(`Server is running in port ${environments.port}`),
+    console.log(`Server is running in port ${environments.port || 3001}`),
   );
 }
 bootstrap();
