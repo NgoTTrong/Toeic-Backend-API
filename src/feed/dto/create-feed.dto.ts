@@ -8,5 +8,5 @@ export class CreateFeedDto {
   @IsString()
   thumbnail: string;
   @IsNumber()
-  categoryId: number;
+  categoryId: string;
 }

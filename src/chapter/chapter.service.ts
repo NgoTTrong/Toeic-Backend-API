@@ -19,12 +19,12 @@ export class ChapterService {
     return `This action returns all chapter`;
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return this.prismaService.chapter.findFirst({
       where: { id },
     });
   }
-  async getDetailChapter(chapterId: number, courseId: number, userId: number) {
+  async getDetailChapter(chapterId: string, courseId: string, userId: string) {
     const payment = await this.prismaService.payment.findFirst({
       where: {
         courseId,
@@ -81,7 +81,7 @@ export class ChapterService {
     };
   }
 
-  async update(id: number, updateChapterDto: UpdateChapterDto) {
+  async update(id: string, updateChapterDto: UpdateChapterDto) {
     const { courseId, ...updateData } = updateChapterDto;
     if (courseId) {
       const publishedChapter = await this.prismaService.chapter.findMany({
@@ -110,7 +110,7 @@ export class ChapterService {
     });
   }
 
-  async remove(id: number, courseId: number) {
+  async remove(id: string, courseId: string) {
     const deletedChapter = await this.prismaService.chapter.findFirst({
       where: {
         id: id,

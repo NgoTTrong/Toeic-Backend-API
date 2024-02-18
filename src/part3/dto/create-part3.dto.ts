@@ -17,7 +17,7 @@ export class CreatePart3Dto {
       optionC: string;
       optionD?: string;
     }[];
-    topicId?: number;
+    topicId?: string;
     explain?: {
       explain: string;
       images: string[];

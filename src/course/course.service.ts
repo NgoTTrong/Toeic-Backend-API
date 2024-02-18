@@ -12,7 +12,7 @@ export class CourseService {
     private readonly prismaService: PrismaService,
     private readonly userProgressService: UserProgressService,
   ) {}
-  create(createCourseDto: CreateCourseDto, userId: number) {
+  create(createCourseDto: CreateCourseDto, userId: string) {
     return this.prismaService.course.create({
       data: { ...createCourseDto, userId },
       include: {
@@ -22,10 +22,10 @@ export class CourseService {
       },
     });
   }
-  async getAll(userId: number) {
+  async getAll(userId: string) {
     return this.prismaService.course.findMany({ where: { userId: userId } });
   }
-  async findAllCourseOfUser(userId: number) {
+  async findAllCourseOfUser(userId: string) {
     const purchaseCourses = await this.prismaService.payment.findMany({
       where: {
         userId,
@@ -66,8 +66,8 @@ export class CourseService {
     };
   }
   async getAllCoursesByUserId(
-    userId: number,
-    categoryId?: number,
+    userId: string,
+    categoryId?: string,
     title?: string,
   ) {
     const courses = await this.prismaService.course.findMany({
@@ -120,7 +120,7 @@ export class CourseService {
     );
     return coursesWithUserProgress;
   }
-  findOneByUser(id: number, userId: number) {
+  findOneByUser(id: string, userId: string) {
     return this.prismaService.course.findFirst({
       where: { id },
       include: {
@@ -145,7 +145,7 @@ export class CourseService {
       },
     });
   }
-  findOne(id: number) {
+  findOne(id: string) {
     return this.prismaService.course.findFirst({
       where: { id },
       include: {
@@ -161,14 +161,14 @@ export class CourseService {
     });
   }
 
-  update(id: number, updateCourseDto: UpdateCourseDto) {
+  update(id: string, updateCourseDto: UpdateCourseDto) {
     return this.prismaService.course.update({
       where: { id },
       data: updateCourseDto,
     });
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     const _course = await this.prismaService.course.findFirst({
       where: {
         id,
@@ -180,7 +180,7 @@ export class CourseService {
     return this.prismaService.course.delete({ where: { id } });
   }
 
-  async addAttachment(courseId: number, url: string) {
+  async addAttachment(courseId: string, url: string) {
     const _course = await this.prismaService.course.findFirst({
       where: {
         id: courseId,
@@ -198,7 +198,7 @@ export class CourseService {
     });
   }
 
-  async addChapter(courseId: number, chapter: ChapterDto) {
+  async addChapter(courseId: string, chapter: ChapterDto) {
     const lastChapter = await this.prismaService.chapter.findFirst({
       where: {
         courseId,
@@ -215,15 +215,15 @@ export class CourseService {
       },
     });
   }
-  deleteAttachment(attachmentId: number) {
+  deleteAttachment(attachmentId: string) {
     return this.prismaService.attachment.delete({
       where: { id: attachmentId },
     });
   }
 
   async reorderChapters(
-    courseId: number,
-    updateData: { id: number; position: number }[],
+    courseId: string,
+    updateData: { id: string; position: number }[],
   ) {
     const _course = await this.prismaService.course.findFirst({
       where: { id: courseId },

@@ -6,7 +6,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 @Injectable()
 export class UserProgressService {
   constructor(private readonly prismaService: PrismaService) {}
-  async getAllProgress(courseId: number, userId: number) {
+  async getAllProgress(courseId: string, userId: string) {
     const publishedChapters = await this.prismaService.chapter.findMany({
       where: {
         courseId: courseId,
@@ -41,17 +41,17 @@ export class UserProgressService {
     return `This action returns a #${id} userProgress`;
   }
 
-  update(id: number, updateUserProgressDto: UpdateUserProgressDto) {
+  update(id: string, updateUserProgressDto: UpdateUserProgressDto) {
     return this.prismaService.userProgress.update({
       where: { id },
       data: updateUserProgressDto,
     });
   }
-  updateOrCreate(id: number, updateUserProgressDto: UpdateUserProgressDto) {
+  updateOrCreate(updateUserProgressDto: UpdateUserProgressDto, userId: string) {
     return this.prismaService.userProgress.upsert({
       where: {
         userId_chapterId: {
-          userId: updateUserProgressDto.userId,
+          userId: userId,
           chapterId: updateUserProgressDto.chapterId,
         },
       },
@@ -59,7 +59,7 @@ export class UserProgressService {
         isCompleted: updateUserProgressDto.isCompleted,
       },
       create: {
-        userId: updateUserProgressDto.userId,
+        userId: userId,
         chapterId: updateUserProgressDto.chapterId,
         isCompleted: updateUserProgressDto.isCompleted,
       },

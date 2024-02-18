@@ -67,15 +67,15 @@ export class Part3Service {
     return this.prismaService.part3.findMany({});
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return this.prismaService.part3.findFirst({ where: { id } });
   }
 
-  update(id: number, updatePart3Dto: UpdatePart3Dto) {
+  update(id: string, updatePart3Dto: UpdatePart3Dto) {
     return `This action updates a #${id} part3`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return this.prismaService.part3.delete({ where: { id } });
   }
 }

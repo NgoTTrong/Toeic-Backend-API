@@ -1,10 +1,8 @@
-import { IsNumber } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 
 export class DetailChapterDto {
-  @IsNumber()
-  userId: number;
-  @IsNumber()
-  courseId: number;
-  @IsNumber()
-  chapterId: number;
+  @IsString()
+  courseId: string;
+  @IsString()
+  chapterId: string;
 }

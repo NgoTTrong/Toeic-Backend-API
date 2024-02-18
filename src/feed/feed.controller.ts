@@ -46,23 +46,23 @@ export class FeedController {
   @Get(':id')
   @Public()
   findOne(@Param('id') id: string) {
-    return this.feedService.findOne(+id);
+    return this.feedService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateFeedDto: UpdateFeedDto) {
-    return this.feedService.update(+id, updateFeedDto);
+    return this.feedService.update(id, updateFeedDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.feedService.remove(+id);
+    return this.feedService.remove(id);
   }
 
   @Post('like-or-unlike-feed')
   likeOrUnlikeFeed(@GetUser() user: Payload, @Body() likeFeedDto: LikeFeedDto) {
     if (+likeFeedDto.feedId) {
-      return this.feedService.likeOrUnlikeFeed(+user.id, +likeFeedDto.feedId);
+      return this.feedService.likeOrUnlikeFeed(user.id, likeFeedDto.feedId);
     }
     throw new BadRequestException("Feed Id isn't valid");
   }
@@ -73,8 +73,8 @@ export class FeedController {
   ) {
     if (+likeCommentFeedDto.commentId) {
       return this.feedService.likeOrUnlikeCommentFeed(
-        +user.id,
-        +likeCommentFeedDto.commentId,
+        user.id,
+        likeCommentFeedDto.commentId,
       );
     }
     throw new BadRequestException("Feed Id isn't valid");
@@ -85,8 +85,8 @@ export class FeedController {
     @Body() commentFeedDto: CommentFeedDto,
   ) {
     return this.feedService.commentFeed(
-      +user.id,
-      +commentFeedDto.feedId,
+      user.id,
+      commentFeedDto.feedId,
       commentFeedDto.content,
     );
   }
@@ -96,9 +96,9 @@ export class FeedController {
     @Body() replyCommentFeedDto: ReplyCommentFeedDto,
   ) {
     return this.feedService.replyCommentFeed(
-      +user.id,
-      +replyCommentFeedDto.feedId,
-      +replyCommentFeedDto.commentId,
+      user.id,
+      replyCommentFeedDto.feedId,
+      replyCommentFeedDto.commentId,
       replyCommentFeedDto.content,
     );
   }

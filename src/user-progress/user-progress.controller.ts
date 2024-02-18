@@ -9,17 +9,20 @@ import {
   Put,
 } from '@nestjs/common';
 import { UserProgressService } from './user-progress.service';
-import { CreateUserProgressDto } from './dto/create-user-progress.dto';
 import { UpdateUserProgressDto } from './dto/update-user-progress.dto';
-import { Public } from 'src/core/decorators';
+import { GetUser, Public } from 'src/core/decorators';
+import { Payload } from 'src/core/type/jwt.payload';
 
 @Controller('user-progress')
 export class UserProgressController {
   constructor(private readonly userProgressService: UserProgressService) {}
   @Get('/all/:courseId')
   @Public()
-  getAllProgress(@Param('courseId') courseId: number) {
-    return this.userProgressService.getAllProgress(+courseId, 1);
+  getAllProgress(
+    @Param('courseId') courseId: string,
+    @GetUser() user: Payload,
+  ) {
+    return this.userProgressService.getAllProgress(courseId, user.id);
   }
 
   @Get()
@@ -33,20 +36,21 @@ export class UserProgressController {
   }
 
   @Patch(':id')
-  @Public()
   update(
     @Param('id') id: string,
     @Body() updateUserProgressDto: UpdateUserProgressDto,
   ) {
-    return this.userProgressService.update(+id, updateUserProgressDto);
+    return this.userProgressService.update(id, updateUserProgressDto);
   }
   @Post('create-or-update')
-  @Public()
   updateOrCreateProgress(
-    @Param('id') id: string,
     @Body() updateUserProgressDto: UpdateUserProgressDto,
+    @GetUser() user: Payload,
   ) {
-    return this.userProgressService.updateOrCreate(+id, updateUserProgressDto);
+    return this.userProgressService.updateOrCreate(
+      updateUserProgressDto,
+      user.id,
+    );
   }
   @Delete(':id')
   remove(@Param('id') id: string) {

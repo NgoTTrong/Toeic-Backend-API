@@ -9,7 +9,6 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 import { environments } from './environments';
 import { join } from 'path';
 import { FeedModule } from './feed/feed.module';
-import { CategoryFeedModule } from './category-feed/category-feed.module';
 import { ExamModule } from './exam/exam.module';
 import { Part1Module } from './part1/part1.module';
 import { Part2Module } from './part2/part2.module';
@@ -21,10 +20,10 @@ import { Part7Module } from './part7/part7.module';
 import { ChatbotModule } from './chatbot/chatbot.module';
 
 import { CourseModule } from './course/course.module';
-import { CategoryCourseModule } from './category-course/category-course.module';
 import { ChapterModule } from './chapter/chapter.module';
 import { UserProgressModule } from './user-progress/user-progress.module';
 import { PaymentModule } from './payment/payment.module';
+import { FeedCategoryModule } from './feed-category/feed-category.module';
 @Module({
   imports: [
     PrismaModule,
@@ -44,7 +43,6 @@ import { PaymentModule } from './payment/payment.module';
       },
     }),
     FeedModule,
-    CategoryFeedModule,
     ExamModule,
     Part1Module,
     Part2Module,
@@ -55,10 +53,10 @@ import { PaymentModule } from './payment/payment.module';
     Part7Module,
     ChatbotModule,
     CourseModule,
-    CategoryCourseModule,
     ChapterModule,
     UserProgressModule,
     PaymentModule,
+    FeedCategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

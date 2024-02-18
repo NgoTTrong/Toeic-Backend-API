@@ -8,29 +8,24 @@ import {
   Delete,
 } from '@nestjs/common';
 import { PaymentService } from './payment.service';
-import { CreatePaymentDto } from './dto/create-payment.dto';
-import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { UserPaymentDto } from './dto/user-payment.dto';
-import { Public } from 'src/core/decorators';
+import { GetUser, Public } from 'src/core/decorators';
+import { Payload } from 'src/core/type/jwt.payload';
 
 @Controller('payment')
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
   @Post('user-payment-course')
-  @Public()
-  getUserPaymentCourse(@Body() dto: UserPaymentDto) {
-    return this.paymentService.findUserPaymentCourse(dto.courseId, dto.userId);
+  getUserPaymentCourse(@Body() dto: UserPaymentDto, @GetUser() user: Payload) {
+    return this.paymentService.findUserPaymentCourse(dto.courseId, user.id);
   }
   @Post('purchase')
-  @Public()
-  purchaseCourse(@Body() dto: UserPaymentDto) {
-    return this.paymentService.purchaseCourse(dto.courseId, dto.userId);
+  purchaseCourse(@Body() dto: UserPaymentDto, @GetUser() user: Payload) {
+    return this.paymentService.purchaseCourse(dto.courseId, user.id);
   }
-
   @Get('/analytics')
-  @Public()
-  getAnalytics() {
-    return this.paymentService.getAnalytics(1);
+  getAnalytics(@GetUser() user: Payload) {
+    return this.paymentService.getAnalytics(user.id);
   }
 }

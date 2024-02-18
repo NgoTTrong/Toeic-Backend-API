@@ -22,81 +22,69 @@ export class CourseController {
   constructor(private readonly courseService: CourseService) {}
 
   @Post()
-  @Public()
-  create(@Body() createCourseDto: CreateCourseDto) {
-    return this.courseService.create(createCourseDto, 1);
+  create(@Body() createCourseDto: CreateCourseDto, @GetUser() user: Payload) {
+    return this.courseService.create(createCourseDto, user.id);
   }
 
   @Get('/get-all-of-user')
-  @Public()
-  findAll() {
-    return this.courseService.findAllCourseOfUser(1);
+  findAll(@GetUser() user: Payload) {
+    return this.courseService.findAllCourseOfUser(user.id);
   }
 
-  @Get('all/:userId')
-  @Public()
+  @Get('all')
   getAllByUser(
-    @Param('userId') userId: number,
-    @Query('categoryId') categoryId: number,
+    @Query('categoryId') categoryId: string,
     @Query('title') title: string,
+    @GetUser() user: Payload,
   ) {
     return this.courseService.getAllCoursesByUserId(
-      Number(userId),
-      categoryId ? Number(categoryId) : undefined,
+      user.id,
+      categoryId ? categoryId : undefined,
       title,
     );
   }
 
   @Get('by-user/:courseId')
-  @Public()
   getCourseByUser(
-    @Param('courseId') courseId: number,
-    @Query('userId') userId: number,
+    @Param('courseId') courseId: string,
+    @GetUser() user: Payload,
   ) {
-    return this.courseService.findOneByUser(+courseId, Number(userId));
+    return this.courseService.findOneByUser(courseId, user.id);
   }
   @Get()
-  @Public()
-  getAllCourse() {
-    return this.courseService.getAll(1);
+  getAllCourse(@GetUser() user: Payload) {
+    return this.courseService.getAll(user.id);
   }
   @Get(':id')
-  @Public()
   findOne(@Param('id') id: string) {
-    return this.courseService.findOne(+id);
+    return this.courseService.findOne(id);
   }
 
   @Patch(':id')
-  @Public()
   update(@Param('id') id: string, @Body() updateCourseDto: UpdateCourseDto) {
-    return this.courseService.update(+id, updateCourseDto);
+    return this.courseService.update(id, updateCourseDto);
   }
   @Post(':id/attachment')
-  @Public()
   addAttachment(
     @Param('id') id: string,
     @Body() attachment: AttachmentCourseDto,
   ) {
-    return this.courseService.addAttachment(+id, attachment.url);
+    return this.courseService.addAttachment(id, attachment.url);
   }
   @Post(':id/chapters')
-  @Public()
   addChapter(@Param('id') id: string, @Body() chapter: ChapterDto) {
-    return this.courseService.addChapter(+id, chapter);
+    return this.courseService.addChapter(id, chapter);
   }
   @Post(':id/chapters/reorder')
-  @Public()
   reorderChapter(@Param('id') id: string, @Body() reorderDto: ReorderDto) {
-    return this.courseService.reorderChapters(+id, reorderDto.reorderData);
+    return this.courseService.reorderChapters(id, reorderDto.reorderData);
   }
   @Delete(':id')
-  @Public()
   remove(@Param('id') id: string) {
-    return this.courseService.remove(+id);
+    return this.courseService.remove(id);
   }
   @Delete('attachment/:attachmentId')
-  @Public()
-  removeAttachment(@Param('attachmentId') attachmentId: number) {
-    return this.courseService.deleteAttachment(+attachmentId);
+  removeAttachment(@Param('attachmentId') attachmentId: string) {
+    return this.courseService.deleteAttachment(attachmentId);
   }
 }

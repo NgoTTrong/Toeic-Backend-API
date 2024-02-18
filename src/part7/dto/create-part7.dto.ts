@@ -16,7 +16,7 @@ export class CreatePart7Dto {
       optionC: string;
       optionD?: string;
     }[];
-    topicId?: number;
+    topicId?: string;
     explain?: {
       explain: string;
       images: string[];

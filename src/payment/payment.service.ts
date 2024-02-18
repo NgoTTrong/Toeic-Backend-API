@@ -7,7 +7,7 @@ type Purchase = Course & { total: number };
 @Injectable()
 export class PaymentService {
   constructor(private readonly prismaService: PrismaService) {}
-  findUserPaymentCourse(courseId: number, userId: number) {
+  findUserPaymentCourse(courseId: string, userId: string) {
     return this.prismaService.payment.findFirst({
       where: {
         courseId,
@@ -15,7 +15,7 @@ export class PaymentService {
       },
     });
   }
-  purchaseCourse(courseId: number, userId: number) {
+  purchaseCourse(courseId: string, userId: string) {
     return this.prismaService.payment.create({
       data: {
         courseId,
@@ -24,7 +24,7 @@ export class PaymentService {
     });
   }
 
-  async getAnalytics(userId: number) {
+  async getAnalytics(userId: string) {
     const payments = await this.prismaService.payment.findMany({
       include: { course: true },
       where: {

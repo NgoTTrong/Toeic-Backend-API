@@ -7,7 +7,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class FeedService {
   constructor(private prismaService: PrismaService) {}
 
-  create(createFeedDto: CreateFeedDto, userId: number) {
+  create(createFeedDto: CreateFeedDto, userId: string) {
     return this.prismaService.feed.create({
       data: { ...createFeedDto, userId },
     });
@@ -56,7 +56,7 @@ export class FeedService {
     });
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return this.prismaService.feed.findMany({
       where: { id },
       orderBy: {
@@ -97,20 +97,20 @@ export class FeedService {
     });
   }
 
-  update(id: number, updateFeedDto: UpdateFeedDto) {
+  update(id: string, updateFeedDto: UpdateFeedDto) {
     return this.prismaService.feed.update({
       where: { id },
       data: updateFeedDto,
     });
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return this.prismaService.feed.delete({
       where: { id },
     });
   }
 
-  async likeOrUnlikeFeed(userId: number, feedId: number) {
+  async likeOrUnlikeFeed(userId: string, feedId: string) {
     const likeFeed = await this.prismaService.likeFeed.findFirst({
       where: {
         userId,
@@ -132,7 +132,7 @@ export class FeedService {
       });
     }
   }
-  async likeOrUnlikeCommentFeed(userId: number, commentId: number) {
+  async likeOrUnlikeCommentFeed(userId: string, commentId: string) {
     const likeFeed = await this.prismaService.likeCommentFeed.findFirst({
       where: {
         userId,
@@ -155,7 +155,7 @@ export class FeedService {
     }
   }
 
-  async commentFeed(userId: number, feedId: number, content: string) {
+  async commentFeed(userId: string, feedId: string, content: string) {
     return this.prismaService.commentFeed.create({
       data: {
         userId,
@@ -165,9 +165,9 @@ export class FeedService {
     });
   }
   async replyCommentFeed(
-    userId: number,
-    feedId: number,
-    commentId: number,
+    userId: string,
+    feedId: string,
+    commentId: string,
     content: string,
   ) {
     return this.prismaService.commentFeed.create({

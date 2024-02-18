@@ -17,9 +17,9 @@ export class UserService {
       throw new BadRequestException('Email is existed');
     }
 
-    return await this.prismaService.user.create({
-      data: createUserDto,
-    });
+    // return await this.prismaService.user.create({
+    //   data: createUserDto,
+    // });
   }
 
   findAll(skip: number, take: number) {
@@ -32,7 +32,7 @@ export class UserService {
     });
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return this.prismaService.user.findFirst({
       where: { id },
     });
@@ -44,7 +44,7 @@ export class UserService {
     });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  update(id: string, updateUserDto: UpdateUserDto) {
     return this.prismaService.user.update({
       where: { id },
       data: updateUserDto,
