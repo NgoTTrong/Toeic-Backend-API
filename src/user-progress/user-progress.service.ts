@@ -24,6 +24,7 @@ export class UserProgressService {
         isCompleted: true,
       },
     });
+
     const percentage =
       (validCompletedChapters * 100) / publishedChapters.length;
     return percentage;

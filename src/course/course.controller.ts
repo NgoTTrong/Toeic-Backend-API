@@ -55,7 +55,11 @@ export class CourseController {
   ) {
     return this.courseService.findOneByUser(+courseId, Number(userId));
   }
-
+  @Get()
+  @Public()
+  getAllCourse() {
+    return this.courseService.getAll(1);
+  }
   @Get(':id')
   @Public()
   findOne(@Param('id') id: string) {

@@ -22,7 +22,9 @@ export class CourseService {
       },
     });
   }
-
+  async getAll(userId: number) {
+    return this.prismaService.course.findMany({ where: { userId: userId } });
+  }
   async findAllCourseOfUser(userId: number) {
     const purchaseCourses = await this.prismaService.payment.findMany({
       where: {
@@ -42,11 +44,13 @@ export class CourseService {
     const courses: any[] = purchaseCourses?.map((purchase) => ({
       course: purchase.course,
     }));
+
     for (let course of courses) {
       const progress = await this.userProgressService.getAllProgress(
-        course.id,
+        course?.course?.id,
         userId,
       );
+
       course['progress'] = progress;
     }
 
@@ -95,7 +99,7 @@ export class CourseService {
       },
     });
 
-    const cousesWithUserProgress = await Promise.all(
+    const coursesWithUserProgress = await Promise.all(
       courses.map(async (course) => {
         if (course.payment.length == 0) {
           return {
@@ -114,7 +118,7 @@ export class CourseService {
         }
       }),
     );
-    return cousesWithUserProgress;
+    return coursesWithUserProgress;
   }
   findOneByUser(id: number, userId: number) {
     return this.prismaService.course.findFirst({
