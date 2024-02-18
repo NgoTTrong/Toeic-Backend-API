@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
@@ -18,6 +18,8 @@ import { Part4Module } from './part4/part4.module';
 import { Part5Module } from './part5/part5.module';
 import { Part6Module } from './part6/part6.module';
 import { Part7Module } from './part7/part7.module';
+import { ChatbotModule } from './chatbot/chatbot.module';
+
 import { CourseModule } from './course/course.module';
 import { CategoryCourseModule } from './category-course/category-course.module';
 import { ChapterModule } from './chapter/chapter.module';
@@ -51,6 +53,7 @@ import { PaymentModule } from './payment/payment.module';
     Part5Module,
     Part6Module,
     Part7Module,
+    ChatbotModule,
     CourseModule,
     CategoryCourseModule,
     ChapterModule,
