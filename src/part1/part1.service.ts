@@ -7,6 +7,15 @@ import { Explain } from '@prisma/client';
 @Injectable()
 export class Part1Service {
   constructor(private readonly prismaService: PrismaService) {}
+
+  async createV2(title: string, userId: string) {
+    return this.prismaService.part1.create({
+      data: {
+        title: title,
+        creatorId: userId,
+      },
+    });
+  }
   async create(createPart1Dto: CreatePart1Dto) {
     const _part1 = await this.prismaService.part1.create({
       data: {
@@ -51,8 +60,10 @@ export class Part1Service {
     return this.prismaService.part1.findMany({});
   }
 
-  findOne(id: string) {
-    return this.prismaService.part1.findFirst({ where: { id } });
+  findOne(id: string, userId: string) {
+    return this.prismaService.part1.findFirst({
+      where: { id, creatorId: userId },
+    });
   }
 
   update(id: string, updatePart1Dto: UpdatePart1Dto) {
