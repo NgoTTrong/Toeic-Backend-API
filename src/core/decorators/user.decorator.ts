@@ -7,8 +7,8 @@ import {
 export const GetUser = createParamDecorator(
   (key: string, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
-    const user = request.user;
+    const user = request.userId;
     if (!user) throw new UnauthorizedException();
-    return key ? user[key] : user;
+    return {id: user};
   },
 );

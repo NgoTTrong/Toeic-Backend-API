@@ -25,25 +25,9 @@ export class AuthService {
     if (_user) {
       if (_user.active == 'INACTIVE')
         throw new BadRequestException('Your account is inactive');
-      const payload: Payload = {
-        id: _user.id,
-        avatar: _user.avatar,
-        phone: _user.phone,
-        email: _user.email,
-        name: _user.name,
-      };
-      const accessToken = await this.jwtService.signAsync(
-        payload,
-        this.getAccessTokenOptions(),
-      );
-      return {
-        user: _user,
-        accessToken,
-        refreshToken: await this.jwtService.signAsync(
-          payload,
-          this.getRefreshTokenOptions(),
-        ),
-      };
+
+      return _user
+   
     } else {
       const data = await clerk.users.getUser(userId);
       const newUser = await this.prismaService.user.create({
@@ -55,26 +39,8 @@ export class AuthService {
           name: data.firstName + ' ' + data?.lastName,
         },
       });
-      const payload: Payload = {
-        id: newUser.id,
-        avatar: data.imageUrl,
-        phone: data.phoneNumbers?.[0]?.phoneNumber,
-        email: data.emailAddresses?.[0]?.emailAddress,
-        name: data.firstName + data?.lastName,
-      };
-      const accessToken = await this.jwtService.signAsync(
-        payload,
-        this.getAccessTokenOptions(),
-      );
 
-      return {
-        user: newUser,
-        accessToken,
-        refreshToken: await this.jwtService.signAsync(
-          payload,
-          this.getRefreshTokenOptions(),
-        ),
-      };
+      return newUser
     }
   }
   // FIXME: change to use clerk authentication
@@ -151,11 +117,7 @@ export class AuthService {
     }
 
     const payload: Payload = {
-      avatar: user.avatar,
-      email: user.email,
       id: user.id,
-      name: user.name,
-      phone: user.phone,
     };
 
     const acessToken = await this.jwtService.signAsync(

@@ -24,6 +24,7 @@ import { ChapterModule } from './chapter/chapter.module';
 import { UserProgressModule } from './user-progress/user-progress.module';
 import { PaymentModule } from './payment/payment.module';
 import { FeedCategoryModule } from './feed-category/feed-category.module';
+import { CourseCategoryModule } from './course-category/course-category.module';
 @Module({
   imports: [
     PrismaModule,
@@ -57,6 +58,7 @@ import { FeedCategoryModule } from './feed-category/feed-category.module';
     UserProgressModule,
     PaymentModule,
     FeedCategoryModule,
+    CourseCategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

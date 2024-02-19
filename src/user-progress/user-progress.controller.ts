@@ -17,7 +17,6 @@ import { Payload } from 'src/core/type/jwt.payload';
 export class UserProgressController {
   constructor(private readonly userProgressService: UserProgressService) {}
   @Get('/all/:courseId')
-  @Public()
   getAllProgress(
     @Param('courseId') courseId: string,
     @GetUser() user: Payload,
@@ -26,16 +25,19 @@ export class UserProgressController {
   }
 
   @Get()
+  @Public()
   findAll() {
     return this.userProgressService.findAll();
   }
 
-  @Get(':id')
+  @Get(':id') 
+  @Public()
   findOne(@Param('id') id: string) {
     return this.userProgressService.findOne(+id);
   }
 
   @Patch(':id')
+  @Public()
   update(
     @Param('id') id: string,
     @Body() updateUserProgressDto: UpdateUserProgressDto,
@@ -53,6 +55,7 @@ export class UserProgressController {
     );
   }
   @Delete(':id')
+  @Public()
   remove(@Param('id') id: string) {
     return this.userProgressService.remove(+id);
   }

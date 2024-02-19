@@ -56,15 +56,18 @@ export class CourseController {
     return this.courseService.getAll(user.id);
   }
   @Get(':id')
+  @Public()
   findOne(@Param('id') id: string) {
     return this.courseService.findOne(id);
   }
 
   @Patch(':id')
+  @Public()
   update(@Param('id') id: string, @Body() updateCourseDto: UpdateCourseDto) {
     return this.courseService.update(id, updateCourseDto);
   }
   @Post(':id/attachment')
+  @Public()
   addAttachment(
     @Param('id') id: string,
     @Body() attachment: AttachmentCourseDto,
@@ -72,18 +75,22 @@ export class CourseController {
     return this.courseService.addAttachment(id, attachment.url);
   }
   @Post(':id/chapters')
+  @Public()
   addChapter(@Param('id') id: string, @Body() chapter: ChapterDto) {
     return this.courseService.addChapter(id, chapter);
   }
   @Post(':id/chapters/reorder')
+  @Public()
   reorderChapter(@Param('id') id: string, @Body() reorderDto: ReorderDto) {
     return this.courseService.reorderChapters(id, reorderDto.reorderData);
   }
   @Delete(':id')
+  @Public()
   remove(@Param('id') id: string) {
     return this.courseService.remove(id);
   }
   @Delete('attachment/:attachmentId')
+  @Public()
   removeAttachment(@Param('attachmentId') attachmentId: string) {
     return this.courseService.deleteAttachment(attachmentId);
   }
