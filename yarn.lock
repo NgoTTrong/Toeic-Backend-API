@@ -3146,9 +3146,9 @@ flat-cache@^3.0.4:
     rimraf "^3.0.2"
 
 flatted@^3.2.9:
-  version "3.2.13"
-  resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.2.13.tgz#7c952605508c972b154440d8ec7574e91d06c809"
-  integrity sha512-al0sOeWDRucu1NuY4JaahaNOa4Yy0uDzIrtQn0EugTH8c7t/h5UV/dOeQs9Bl/nOgKdO3gkmnxREGoWM6X+9oQ==
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.3.0.tgz#5fdca2b5e671cd38d1537427a10e02a2caa8257e"
+  integrity sha512-noqGuLw158+DuD9UPRKHpJ2hGxpFyDlYYrfM0mWt4XhT4n0lwzTLh70Tkdyy4kyTmyTT9Bv7bWAJqw7cgkEXDg==
 
 foreground-child@^3.1.0:
   version "3.1.1"
@@ -6180,7 +6180,6 @@ string-length@^4.0.1:
     strip-ansi "^6.0.0"
 
 "string-width-cjs@npm:string-width@^4.2.0", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
-  name string-width-cjs
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
