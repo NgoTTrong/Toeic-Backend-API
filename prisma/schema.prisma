@@ -208,6 +208,7 @@ model LikeCommentExam {
 
 model Part1 {
   id             String          @id @default(uuid())
+  createdAt      DateTime        @default(now())
   thumbnail      String?
   creatorId      String?
   duration       Int?
@@ -229,6 +230,7 @@ model Part1Question {
   part1Id    String
   explainId  String?  @unique
   topicId    String?  @unique
+  position   Int?
   explain    Explain? @relation(fields: [explainId], references: [id])
   part1      Part1    @relation(fields: [part1Id], references: [id])
   question   Question @relation(fields: [questionId], references: [id])

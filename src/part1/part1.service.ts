@@ -56,8 +56,15 @@ export class Part1Service {
     return 'Done';
   }
 
-  findAll() {
-    return this.prismaService.part1.findMany({});
+  findAll(userId: string) {
+    return this.prismaService.part1.findMany({
+      where: {
+        creatorId: userId,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
   }
 
   findOne(id: string, userId: string) {
@@ -67,7 +74,10 @@ export class Part1Service {
   }
 
   update(id: string, updatePart1Dto: UpdatePart1Dto) {
-    return `This action updates a #${id} part1`;
+    return this.prismaService.part1.update({
+      where: { id },
+      data: updatePart1Dto,
+    });
   }
 
   remove(id: string) {
