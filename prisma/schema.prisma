@@ -486,7 +486,6 @@ model Topic {
 model Explain {
   id            String         @id @default(uuid())
   explain       String
-  images        String[]
   answer        Answer
   Part1Question Part1Question?
   Part2Question Part2Question?

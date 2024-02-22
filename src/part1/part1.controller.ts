@@ -13,6 +13,7 @@ import { UpdatePart1Dto } from './dto/update-part1.dto';
 import { CreatePart1V2Dto } from './dto/create-part1-v2.dto';
 import { Payload } from 'src/core/type/jwt.payload';
 import { GetUser, Public } from 'src/core/decorators';
+import { CreateQuestionDto } from './dto/create-question.dto';
 
 @Controller('part1')
 export class Part1Controller {
@@ -21,9 +22,14 @@ export class Part1Controller {
   createV2(@Body() createPart1Dto: CreatePart1V2Dto, @GetUser() user: Payload) {
     return this.part1Service.createV2(createPart1Dto.title, user.id);
   }
-  @Post('/create-question')
+  @Post('/create-question/:id')
   @Public()
-  createQuestion(@Body() createPart1Dto: CreatePart1V2Dto) {}
+  createQuestion(
+    @Body() createQuestion: CreateQuestionDto,
+    @Param('id') id: string,
+  ) {
+    return this.part1Service.createPart1Question(id, createQuestion);
+  }
 
   @Post()
   create(@Body() createPart1Dto: CreatePart1Dto) {
