@@ -10,14 +10,15 @@ import {
   Req,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto } from 'src/user/dto/create-user.dto';
-import { UserService } from 'src/user/user.service';
 import { GetUser, Public } from 'src/core/decorators';
 import { Payload } from 'src/core/type/jwt.payload';
 import { LoginDto } from './dto/login.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
-import { UpdateUserDto } from 'src/user/dto/update-user.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { LoginClerkDto } from './dto/login-clerk.dto';
+import { UserService } from 'src/features/user/user.service';
+import { CreateUserDto } from 'src/features/user/dto/create-user.dto';
+import { UpdateUserDto } from 'src/features/user/dto/update-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -25,7 +26,11 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly userService: UserService,
   ) {}
-
+  @Post('login-clerk')
+  @Public()
+  async loginClerk(@Body() loginDto: LoginClerkDto) {
+    return this.authService.loginClerk(loginDto.userId);
+  }
   @Get('google')
   @Public()
   @UseGuards(AuthGuard('google'))
@@ -35,18 +40,18 @@ export class AuthController {
   @Public()
   @UseGuards(AuthGuard('google'))
   googleAuthRedirect(@Req() req) {
-    return this.authService.googleLogin(req);
+    // return this.authService.googleLogin(req);
   }
 
   @Post('register')
   @Public()
   register(@Body() createUserDto: CreateUserDto) {
-    return this.authService.create(createUserDto);
+    // return this.authService.create(createUserDto);
   }
   @Post('login')
   @Public()
   login(@Body() loginDto: LoginDto) {
-    return this.authService.login(loginDto);
+    // return this.authService.login(loginDto);
   }
   @Get('me')
   findAll(@GetUser() user: Payload) {

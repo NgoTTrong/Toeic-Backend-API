@@ -20,6 +20,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@clerk/clerk-sdk-node": "^4.13.9",
     "@google/generative-ai": "^0.2.1",
     "@huggingface/inference": "^2.6.4",
     "@nestjs-modules/mailer": "^1.9.1",
@@ -81,5 +82,8 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
-  }
+  },
+  "resolutions": {
+    "string-width": "4.2.3"
+ }
 }

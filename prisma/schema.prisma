@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextIndex", "fullTextSearch"]
 }
 
 datasource db {
@@ -7,42 +8,33 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Staff {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  email     String
-  name      String?
-  phone     String?
-  avatar    String?
-  password  String
-}
-
 model User {
-  id               Int                @id @default(autoincrement())
+  id               String             @id
   createdAt        DateTime           @default(now())
-  email            String
-  name             String
+  email            String?
+  name             String?
   phone            String?
   avatar           String?
-  password         String?
-  rankId           Int?
-  authFrom         AuthFrom           @default(TRANDITIONAL)
-  rank             Rank?              @relation(fields: [rankId], references: [id])
-  notifications    NotificationUser[]
-  likeFeeds        LikeFeed[]
-  commentFeeds     CommentFeed[]
-  likeExams        LikeExam[]
-  commentExams     CommentExam[]
+  rankId           String?
   active           Active             @default(ACTIVE)
+  address          String?
+  commentExams     CommentExam[]
+  commentFeeds     CommentFeed[]
+  Feed             Feed[]
   likeCommentExams LikeCommentExam[]
   likeCommentFeeds LikeCommentFeed[]
-  Explain          Explain[]
+  likeExams        LikeExam[]
+  likeFeeds        LikeFeed[]
+  notifications    NotificationUser[]
+  Part1            Part1[]
+  Payment          Payment[]
+  rank             Rank?              @relation(fields: [rankId], references: [id])
 
   @@index([id, email])
 }
 
 model Rank {
-  id          Int      @id @default(autoincrement())
+  id          String   @id @default(uuid())
   createdAt   DateTime @default(now())
   name        String
   description String?
@@ -53,7 +45,7 @@ model Rank {
 }
 
 model Notification {
-  id            Int                @id @default(autoincrement())
+  id            String             @id @default(uuid())
   createdAt     DateTime           @default(now())
   title         String
   content       String
@@ -63,33 +55,35 @@ model Notification {
 }
 
 model NotificationUser {
-  id             Int          @id @default(autoincrement())
+  id             String       @id @default(uuid())
   createdAt      DateTime     @default(now())
-  userId         Int
-  notificationId Int
-  user           User         @relation(fields: [userId], references: [id])
-  notification   Notification @relation(fields: [notificationId], references: [id])
-
-  @@index([id, userId])
-}
-
-model Feed {
-  id         Int           @id @default(autoincrement())
-  createdAt  DateTime      @default(now())
-  title      String
-  content    String
-  thumbnail  String
-  categoryId Int
-  active     Active        @default(ACTIVE)
-  category   CategoryFeed  @relation(fields: [categoryId], references: [id])
-  likes      LikeFeed[]
-  comments   CommentFeed[]
+  userId         String
+  notificationId String
+  notification   Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([id])
 }
 
-model CategoryFeed {
-  id         Int      @id @default(autoincrement())
+model Feed {
+  id         String        @id @default(uuid())
+  createdAt  DateTime      @default(now())
+  title      String
+  content    String
+  thumbnail  String
+  categoryId String?
+  active     Active        @default(ACTIVE)
+  userId     String
+  comments   CommentFeed[]
+  category   FeedCategory? @relation(fields: [categoryId], references: [id])
+  user       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  likes      LikeFeed[]
+
+  @@index([id])
+}
+
+model FeedCategory {
+  id         String   @id @default(uuid())
   createdAt  DateTime @default(now())
   name       String
   color      String
@@ -100,61 +94,61 @@ model CategoryFeed {
 }
 
 model LikeFeed {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   createdAt DateTime @default(now())
-  userId    Int
-  feedId    Int
-  user      User     @relation(fields: [userId], references: [id])
-  feed      Feed     @relation(fields: [feedId], references: [id])
+  userId    String
+  feedId    String
+  feed      Feed     @relation(fields: [feedId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId, feedId])
+  @@index([feedId])
 }
 
 model CommentFeed {
-  id            Int               @id @default(autoincrement())
+  id            String            @id @default(uuid())
   createdAt     DateTime          @default(now())
-  userId        Int
-  feedId        Int
+  userId        String
+  feedId        String
   content       String
-  user          User              @relation(fields: [userId], references: [id])
-  feed          Feed              @relation(fields: [feedId], references: [id])
-  parentId      Int?
-  parentComment CommentFeed?      @relation("ParentCommentFeed", fields: [parentId], references: [id])
+  parentId      String?
+  feed          Feed              @relation(fields: [feedId], references: [id], onDelete: Cascade)
+  parentComment CommentFeed?      @relation("ParentCommentFeed", fields: [parentId], references: [id], onDelete: Cascade)
   childComments CommentFeed[]     @relation("ParentCommentFeed")
+  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   likes         LikeCommentFeed[]
 
-  @@index([userId, feedId])
+  @@index([feedId])
+  @@index([parentId])
 }
 
 model LikeCommentFeed {
-  id        Int         @id @default(autoincrement())
-  commentId Int
-  userId    Int
-  user      User        @relation(fields: [userId], references: [id])
-  comment   CommentFeed @relation(fields: [commentId], references: [id])
+  id        String      @id @default(uuid())
+  commentId String
+  userId    String
+  comment   CommentFeed @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Exam {
-  id           Int           @id @default(autoincrement())
+  id           String        @id @default(uuid())
   createdAt    DateTime      @default(now())
   audioUrl     String
   breakPoints  Int[]
   thumbnail    String
-  title        String
+  categoryId   String?
+  part1Id      String
+  part2Id      String
+  part3Id      String
+  part4Id      String
+  part5Id      String
+  part6Id      String
+  part7Id      String
+  duration     Int
   introduction String
   numOfParts   Int
-  duration     Int
-  categoryId   Int
-  category     CategoryExam  @relation(fields: [categoryId], references: [id])
-  likes        LikeExam[]
+  title        String
   comments     CommentExam[]
-  part1Id      Int
-  part2Id      Int
-  part3Id      Int
-  part4Id      Int
-  part5Id      Int
-  part6Id      Int
-  part7Id      Int
+  category     ExamCategory? @relation(fields: [categoryId], references: [id])
   part1        Part1         @relation(fields: [part1Id], references: [id])
   part2        Part2         @relation(fields: [part2Id], references: [id])
   part3        Part3         @relation(fields: [part3Id], references: [id])
@@ -162,12 +156,13 @@ model Exam {
   part5        Part5         @relation(fields: [part5Id], references: [id])
   part6        Part6         @relation(fields: [part6Id], references: [id])
   part7        Part7         @relation(fields: [part7Id], references: [id])
+  likes        LikeExam[]
 
   @@index([id])
 }
 
-model CategoryExam {
-  id         Int      @id @default(autoincrement())
+model ExamCategory {
+  id         String   @id @default(uuid())
   createdAt  DateTime @default(now())
   name       String
   color      String
@@ -178,74 +173,79 @@ model CategoryExam {
 }
 
 model LikeExam {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   createdAt DateTime @default(now())
-  userId    Int
-  examId    Int
-  user      User     @relation(fields: [userId], references: [id])
-  exam      Exam     @relation(fields: [examId], references: [id])
+  userId    String
+  examId    String
+  exam      Exam     @relation(fields: [examId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId, examId])
+  @@index([examId])
 }
 
 model CommentExam {
-  id            Int               @id @default(autoincrement())
-  userId        Int
-  examId        Int
+  id            String            @id @default(uuid())
+  userId        String
+  examId        String
   content       String
-  user          User              @relation(fields: [userId], references: [id])
-  exam          Exam              @relation(fields: [examId], references: [id])
-  parentId      Int?
-  parentComment CommentExam?      @relation("ParentCommentExam", fields: [parentId], references: [id])
+  parentId      String?
+  exam          Exam              @relation(fields: [examId], references: [id], onDelete: Cascade)
+  parentComment CommentExam?      @relation("ParentCommentExam", fields: [parentId], references: [id], onDelete: Cascade)
   childComments CommentExam[]     @relation("ParentCommentExam")
+  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   likes         LikeCommentExam[]
 
-  @@index([userId, examId])
+  @@index([examId])
 }
 
 model LikeCommentExam {
-  id        Int         @id @default(autoincrement())
-  commentId Int
-  userId    Int
-  user      User        @relation(fields: [userId], references: [id])
-  comment   CommentExam @relation(fields: [commentId], references: [id])
+  id        String      @id @default(uuid())
+  commentId String
+  userId    String
+  comment   CommentExam @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Part1 {
-  id             Int             @id @default(autoincrement())
-  thumbnail      String
-  introduction   String
-  numOfQuestions Int
+  id             String          @id @default(uuid())
+  createdAt      DateTime        @default(now())
+  thumbnail      String?
+  creatorId      String?
   duration       Int?
+  introduction   String?
+  numOfQuestions Int?
+  title          String?
   exams          Exam[]
+  creator        User?           @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   part1Questions Part1Question[]
 
   @@index([id])
 }
 
 model Part1Question {
-  id         Int      @id @default(autoincrement())
+  id         String   @id @default(uuid())
   audioUrl   String
   imageUrls  String[]
-  questionId Int
-  part1Id    Int
-  topicId    Int?     @unique
-  explainId  Int?     @unique
+  questionId String
+  part1Id    String
+  explainId  String?
+  topicId    String?
+  position   Int?
+  explain    Explain? @relation(fields: [explainId], references: [id])
   part1      Part1    @relation(fields: [part1Id], references: [id])
   question   Question @relation(fields: [questionId], references: [id])
   topic      Topic?   @relation(fields: [topicId], references: [id])
-  explain    Explain? @relation(fields: [explainId], references: [id])
 
   @@index([id, part1Id])
 }
 
 model Part2 {
-  id             Int             @id @default(autoincrement())
+  id             String          @id @default(uuid())
   createdAt      DateTime        @default(now())
   thumbnail      String
+  duration       Int?
   introduction   String
   numOfQuestions Int
-  duration       Int?
   exams          Exam[]
   part2Questions Part2Question[]
 
@@ -253,28 +253,28 @@ model Part2 {
 }
 
 model Part2Question {
-  id         Int      @id @default(autoincrement())
+  id         String   @id @default(uuid())
   createdAt  DateTime @default(now())
   audioUrl   String
-  questionId Int
-  part2Id    Int
-  topicId    Int?     @unique
-  explainId  Int?     @unique
+  questionId String
+  part2Id    String
+  explainId  String?
+  topicId    String?
+  explain    Explain? @relation(fields: [explainId], references: [id])
   part2      Part2    @relation(fields: [part2Id], references: [id])
   question   Question @relation(fields: [questionId], references: [id])
   topic      Topic?   @relation(fields: [topicId], references: [id])
-  explain    Explain? @relation(fields: [explainId], references: [id])
 
   @@index([id, part2Id])
 }
 
 model Part3 {
-  id             Int             @id @default(autoincrement())
+  id             String          @id @default(uuid())
   createdAt      DateTime        @default(now())
   thumbnail      String
+  duration       Int?
   introduction   String
   numOfQuestions Int
-  duration       Int?
   exams          Exam[]
   part3Questions Part3Question[]
 
@@ -282,24 +282,24 @@ model Part3 {
 }
 
 model Part3Question {
-  id                  Int                    @id @default(autoincrement())
+  id                  String                 @id @default(uuid())
   createdAt           DateTime               @default(now())
   audioUrl            String
   imageUrls           String[]
-  part3Id             Int
-  part3               Part3                  @relation(fields: [part3Id], references: [id])
+  part3Id             String
+  explainId           String?
+  topicId             String?
   groupPart3Questions MappingPart3Question[]
-  topicId             Int?                   @unique
-  explainId           Int?                   @unique
-  topic               Topic?                 @relation(fields: [topicId], references: [id])
   explain             Explain?               @relation(fields: [explainId], references: [id])
+  part3               Part3                  @relation(fields: [part3Id], references: [id])
+  topic               Topic?                 @relation(fields: [topicId], references: [id])
 
   @@index([id, part3Id])
 }
 
 model MappingPart3Question {
-  part3QuestionId Int
-  questionId      Int
+  part3QuestionId String
+  questionId      String
   part3Question   Part3Question @relation(fields: [part3QuestionId], references: [id])
   question        Question      @relation(fields: [questionId], references: [id])
 
@@ -308,12 +308,12 @@ model MappingPart3Question {
 }
 
 model Part4 {
-  id             Int             @id @default(autoincrement())
+  id             String          @id @default(uuid())
   createdAt      DateTime        @default(now())
   thumbnail      String
+  duration       Int?
   introduction   String
   numOfQuestions Int
-  duration       Int?
   exams          Exam[]
   part4Questions Part4Question[]
 
@@ -321,24 +321,24 @@ model Part4 {
 }
 
 model Part4Question {
-  id                  Int                    @id @default(autoincrement())
+  id                  String                 @id @default(uuid())
   createdAt           DateTime               @default(now())
   audioUrl            String
   imageUrls           String[]
-  part4Id             Int
-  part4               Part4                  @relation(fields: [part4Id], references: [id])
+  part4Id             String
+  explainId           String?
+  topicId             String?
   groupPart4Questions MappingPart4Question[]
-  topicId             Int?                   @unique
-  explainId           Int?                   @unique
-  topic               Topic?                 @relation(fields: [topicId], references: [id])
   explain             Explain?               @relation(fields: [explainId], references: [id])
+  part4               Part4                  @relation(fields: [part4Id], references: [id])
+  topic               Topic?                 @relation(fields: [topicId], references: [id])
 
   @@index([id, part4Id])
 }
 
 model MappingPart4Question {
-  part4QuestionId Int
-  questionId      Int
+  part4QuestionId String
+  questionId      String
   part4Question   Part4Question @relation(fields: [part4QuestionId], references: [id])
   question        Question      @relation(fields: [questionId], references: [id])
 
@@ -347,12 +347,12 @@ model MappingPart4Question {
 }
 
 model Part5 {
-  id             Int             @id @default(autoincrement())
+  id             String          @id @default(uuid())
   createdAt      DateTime        @default(now())
   thumbnail      String
+  duration       Int?
   introduction   String
   numOfQuestions Int
-  duration       Int?
   exams          Exam[]
   part5Questions Part5Question[]
 
@@ -360,27 +360,27 @@ model Part5 {
 }
 
 model Part5Question {
-  id         Int      @id @default(autoincrement())
+  id         String   @id @default(uuid())
   createdAt  DateTime @default(now())
-  part5Id    Int
-  questionId Int
+  part5Id    String
+  questionId String
+  explainId  String?
+  topicId    String?
+  explain    Explain? @relation(fields: [explainId], references: [id])
   part5      Part5    @relation(fields: [part5Id], references: [id])
   question   Question @relation(fields: [questionId], references: [id])
-  topicId    Int?     @unique
-  explainId  Int?     @unique
   topic      Topic?   @relation(fields: [topicId], references: [id])
-  explain    Explain? @relation(fields: [explainId], references: [id])
 
   @@index([part5Id, questionId])
 }
 
 model Part6 {
-  id             Int             @id @default(autoincrement())
+  id             String          @id @default(uuid())
   createdAt      DateTime        @default(now())
   thumbnail      String
+  duration       Int?
   introduction   String
   numOfQuestions Int
-  duration       Int?
   exams          Exam[]
   part6Questions Part6Question[]
 
@@ -388,23 +388,23 @@ model Part6 {
 }
 
 model Part6Question {
-  id                  Int                    @id @default(autoincrement())
+  id                  String                 @id @default(uuid())
   createdAt           DateTime               @default(now())
   imageUrls           String[]
-  part6Id             Int
-  part6               Part6                  @relation(fields: [part6Id], references: [id])
+  part6Id             String
+  explainId           String?
+  topicId             String?
   groupPart6Questions MappingPart6Question[]
-  topicId             Int?                   @unique
-  explainId           Int?                   @unique
-  topic               Topic?                 @relation(fields: [topicId], references: [id])
   explain             Explain?               @relation(fields: [explainId], references: [id])
+  part6               Part6                  @relation(fields: [part6Id], references: [id])
+  topic               Topic?                 @relation(fields: [topicId], references: [id])
 
   @@index([id, part6Id])
 }
 
 model MappingPart6Question {
-  part6QuestionId Int
-  questionId      Int
+  part6QuestionId String
+  questionId      String
   part6Question   Part6Question @relation(fields: [part6QuestionId], references: [id])
   question        Question      @relation(fields: [questionId], references: [id])
 
@@ -413,12 +413,12 @@ model MappingPart6Question {
 }
 
 model Part7 {
-  id             Int             @id @default(autoincrement())
+  id             String          @id @default(uuid())
   createdAt      DateTime        @default(now())
   thumbnail      String
+  duration       Int?
   introduction   String
   numOfQuestions Int
-  duration       Int?
   exams          Exam[]
   part7Question  Part7Question[]
 
@@ -426,23 +426,23 @@ model Part7 {
 }
 
 model Part7Question {
-  id                  Int                    @id @default(autoincrement())
+  id                  String                 @id @default(uuid())
   createdAt           DateTime               @default(now())
   imageUrls           String[]
-  part7Id             Int
-  part7               Part7                  @relation(fields: [part7Id], references: [id])
+  part7Id             String
+  explainId           String?
+  topicId             String?
   groupPart7Questions MappingPart7Question[]
-  topicId             Int?                   @unique
-  explainId           Int?                   @unique
-  topic               Topic?                 @relation(fields: [topicId], references: [id])
   explain             Explain?               @relation(fields: [explainId], references: [id])
+  part7               Part7                  @relation(fields: [part7Id], references: [id])
+  topic               Topic?                 @relation(fields: [topicId], references: [id])
 
   @@index([id, part7Id])
 }
 
 model MappingPart7Question {
-  part7QuestionId Int
-  questionId      Int
+  part7QuestionId String
+  questionId      String
   part7Question   Part7Question @relation(fields: [part7QuestionId], references: [id])
   question        Question      @relation(fields: [questionId], references: [id])
 
@@ -451,54 +451,129 @@ model MappingPart7Question {
 }
 
 model Question {
-  id             Int                    @id @default(autoincrement())
+  id             String                 @id @default(uuid())
   createdAt      DateTime               @default(now())
   content        String
   optionA        String?
   optionB        String?
   optionC        String?
   optionD        String?
-  part1Questions Part1Question[]
-  part2Questions Part2Question[]
   part3Questions MappingPart3Question[]
   part4Questions MappingPart4Question[]
-  part5Questions Part5Question[]
   part6Questions MappingPart6Question[]
   part7Questions MappingPart7Question[]
+  part1Questions Part1Question[]
+  part2Questions Part2Question[]
+  part5Questions Part5Question[]
 
   @@index([id])
 }
 
 model Topic {
-  id            Int            @id @default(autoincrement())
+  id            String          @id @default(uuid())
   name          String
-  Part1Question Part1Question?
-  Part2Question Part2Question?
-  Part3Question Part3Question?
-  Part4Question Part4Question?
-  Part5Question Part5Question?
-  Part6Question Part6Question?
-  Part7Question Part7Question?
+  Part1Question Part1Question[]
+  Part2Question Part2Question[]
+  Part3Question Part3Question[]
+  Part4Question Part4Question[]
+  Part5Question Part5Question[]
+  Part6Question Part6Question[]
+  Part7Question Part7Question[]
 
   @@index([id])
 }
 
 model Explain {
-  id            Int            @id @default(autoincrement())
+  id            String          @id @default(uuid())
   explain       String
-  images        String[]
   answer        Answer
-  userId        Int?
-  user          User?          @relation(references: [id], fields: [userId])
-  Part1Question Part1Question?
-  Part2Question Part2Question?
-  Part3Question Part3Question?
-  Part4Question Part4Question?
-  Part5Question Part5Question?
-  Part6Question Part6Question?
-  Part7Question Part7Question?
+  Part1Question Part1Question[]
+  Part2Question Part2Question[]
+  Part3Question Part3Question[]
+  Part4Question Part4Question[]
+  Part5Question Part5Question[]
+  Part6Question Part6Question[]
+  Part7Question Part7Question[]
 
   @@index([id])
+}
+
+model Course {
+  id          String          @id @default(uuid())
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  userId      String
+  title       String
+  description String?
+  imageUrl    String?
+  price       Float?
+  isPublished Boolean         @default(false)
+  categoryId  String?
+  attachments Attachment[]
+  chapters    Chapter[]
+  category    CourseCategory? @relation(fields: [categoryId], references: [id])
+  payment     Payment[]
+
+  @@index([categoryId])
+}
+
+model Attachment {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String
+  url       String
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@index([courseId])
+}
+
+model CourseCategory {
+  id      String   @id @default(uuid())
+  name    String   @unique
+  courses Course[]
+}
+
+model Chapter {
+  id           String         @id @default(uuid())
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  title        String
+  description  String?
+  videoUrl     String?
+  position     Int
+  isPublished  Boolean        @default(false)
+  isFree       Boolean        @default(false)
+  courseId     String
+  course       Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  userProgress UserProgress[]
+
+  @@index([courseId])
+}
+
+model Payment {
+  id       String @id @default(uuid())
+  userId   String
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@index([courseId])
+}
+
+model UserProgress {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  isCompleted Boolean  @default(false)
+  chapterId   String
+  userId      String
+  chapter     Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, chapterId])
+  @@index([chapterId])
 }
 
 enum Answer {
@@ -511,9 +586,4 @@ enum Answer {
 enum Active {
   ACTIVE
   INACTIVE
-}
-
-enum AuthFrom {
-  GOOGLE
-  TRANDITIONAL
 }

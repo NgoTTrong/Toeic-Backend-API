@@ -3,7 +3,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
-import { UserModule } from './user/user.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { environments } from './environments';
@@ -21,11 +20,11 @@ import { Part7Module } from './part7/part7.module';
 import { ChatbotModule } from './chatbot/chatbot.module';
 import { CommentModule } from './comment/comment.module';
 
+import { FeaturesModule } from './features/features.module';
 @Module({
   imports: [
     PrismaModule,
     AuthModule,
-    UserModule,
     MailerModule.forRoot({
       transport: environments.transport,
       defaults: {
@@ -51,6 +50,7 @@ import { CommentModule } from './comment/comment.module';
     Part7Module,
     ChatbotModule,
     CommentModule,
+    FeaturesModule
   ],
   controllers: [AppController],
   providers: [AppService],
