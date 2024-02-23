@@ -19,6 +19,7 @@ import { Part5Module } from './part5/part5.module';
 import { Part6Module } from './part6/part6.module';
 import { Part7Module } from './part7/part7.module';
 import { ChatbotModule } from './chatbot/chatbot.module';
+import { CommentModule } from './comment/comment.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { ChatbotModule } from './chatbot/chatbot.module';
     Part6Module,
     Part7Module,
     ChatbotModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
