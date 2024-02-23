@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreatePart1Dto } from './dto/create-part1.dto';
 import { UpdatePart1Dto } from './dto/update-part1.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Answer, Explain } from '@prisma/client';
 import { CreateQuestionDto } from './dto/create-question.dto';
+import { UpdateQuestionDto } from './dto/update-question.dto';
 
 @Injectable()
 export class Part1Service {
@@ -71,6 +72,17 @@ export class Part1Service {
   findOne(id: string, userId: string) {
     return this.prismaService.part1.findFirst({
       where: { id, creatorId: userId },
+      include: {
+        part1Questions: {
+          include: {
+            question: true,
+            explain: true,
+          },
+          orderBy: {
+            position: 'asc',
+          },
+        },
+      },
     });
   }
 
@@ -80,7 +92,38 @@ export class Part1Service {
       data: updatePart1Dto,
     });
   }
-
+  async updateQuestion(part1QuestionId: string, dto: UpdateQuestionDto) {
+    const _part1Question = await this.prismaService.part1Question.update({
+      where: { id: part1QuestionId },
+      data: {
+        audioUrl: dto.audioUrl ?? undefined,
+        imageUrls: dto.imageUrl ? [dto.imageUrl] : undefined,
+        topicId: dto.topicId ?? undefined,
+      },
+    });
+    await this.prismaService.explain.update({
+      where: {
+        id: dto?.explain?.id,
+      },
+      data: {
+        explain: dto?.explain?.explaination,
+        answer: dto?.explain?.correctAnswer as Answer,
+      },
+    });
+    await this.prismaService.question.update({
+      where: {
+        id: dto?.question?.id,
+      },
+      data: {
+        content: dto?.question?.content,
+        optionA: dto?.question?.optionA,
+        optionB: dto?.question?.optionB,
+        optionC: dto?.question?.optionC,
+        optionD: dto?.question?.optionD,
+      },
+    });
+    return _part1Question;
+  }
   remove(id: string) {
     return this.prismaService.part1.delete({ where: { id } });
   }
@@ -115,5 +158,29 @@ export class Part1Service {
       },
     });
     return _part1Question;
+  }
+  async reorderQuestions(
+    part1Id: string,
+    updateData: { id: string; position: number }[],
+  ) {
+    const _part1 = await this.prismaService.part1.findFirst({
+      where: { id: part1Id },
+    });
+    if (!_part1) {
+      throw new BadRequestException('Part1 is not found!');
+    }
+    return await Promise.all(
+      updateData.map((question) =>
+        this.prismaService.part1Question.update({
+          where: {
+            part1Id,
+            id: question?.id,
+          },
+          data: {
+            position: question?.position,
+          },
+        }),
+      ),
+    );
   }
 }

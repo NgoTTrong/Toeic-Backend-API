@@ -14,6 +14,8 @@ import { CreatePart1V2Dto } from './dto/create-part1-v2.dto';
 import { Payload } from 'src/core/type/jwt.payload';
 import { GetUser, Public } from 'src/core/decorators';
 import { CreateQuestionDto } from './dto/create-question.dto';
+import { ReorderDto } from './dto/reorder.dto';
+import { UpdateQuestionDto } from './dto/update-question.dto';
 
 @Controller('part1')
 export class Part1Controller {
@@ -30,7 +32,14 @@ export class Part1Controller {
   ) {
     return this.part1Service.createPart1Question(id, createQuestion);
   }
-
+  @Patch('/update-question/:id')
+  @Public()
+  updateQuestion(
+    @Body() updateQuestion: UpdateQuestionDto,
+    @Param('id') id: string,
+  ) {
+    return this.part1Service.updateQuestion(id, updateQuestion);
+  }
   @Post()
   create(@Body() createPart1Dto: CreatePart1Dto) {
     return this.part1Service.create(createPart1Dto);
@@ -55,5 +64,10 @@ export class Part1Controller {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.part1Service.remove(id);
+  }
+  @Post(':id/questions/reorder')
+  @Public()
+  reorderChapter(@Param('id') id: string, @Body() reorderDto: ReorderDto) {
+    return this.part1Service.reorderQuestions(id, reorderDto.reorderData);
   }
 }

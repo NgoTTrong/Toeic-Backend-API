@@ -1,14 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { LoginDto } from './dto/login.dto';
-import { UserService } from 'src/user/user.service';
 import { Payload } from 'src/core/type/jwt.payload';
 import { environments } from 'src/environments';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
-import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import clerk from '@clerk/clerk-sdk-node';
+import { UserService } from 'src/features/user/user.service';
 
 @Injectable()
 export class AuthService {

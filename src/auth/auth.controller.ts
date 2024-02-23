@@ -10,15 +10,15 @@ import {
   Req,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto } from 'src/user/dto/create-user.dto';
-import { UserService } from 'src/user/user.service';
 import { GetUser, Public } from 'src/core/decorators';
 import { Payload } from 'src/core/type/jwt.payload';
 import { LoginDto } from './dto/login.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
-import { UpdateUserDto } from 'src/user/dto/update-user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { LoginClerkDto } from './dto/login-clerk.dto';
+import { UserService } from 'src/features/user/user.service';
+import { CreateUserDto } from 'src/features/user/dto/create-user.dto';
+import { UpdateUserDto } from 'src/features/user/dto/update-user.dto';
 
 @Controller('auth')
 export class AuthController {

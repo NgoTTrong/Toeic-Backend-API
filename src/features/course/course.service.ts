@@ -3,8 +3,8 @@ import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ChapterDto } from './dto/chapter.dto';
-import { UserProgressService } from 'src/user-progress/user-progress.service';
 import { Course } from '@prisma/client';
+import { UserProgressService } from '../user-progress/user-progress.service';
 
 @Injectable()
 export class CourseService {

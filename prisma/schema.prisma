@@ -228,8 +228,8 @@ model Part1Question {
   imageUrls  String[]
   questionId String
   part1Id    String
-  explainId  String?  @unique
-  topicId    String?  @unique
+  explainId  String?
+  topicId    String?
   position   Int?
   explain    Explain? @relation(fields: [explainId], references: [id])
   part1      Part1    @relation(fields: [part1Id], references: [id])
@@ -258,8 +258,8 @@ model Part2Question {
   audioUrl   String
   questionId String
   part2Id    String
-  explainId  String?  @unique
-  topicId    String?  @unique
+  explainId  String?
+  topicId    String?
   explain    Explain? @relation(fields: [explainId], references: [id])
   part2      Part2    @relation(fields: [part2Id], references: [id])
   question   Question @relation(fields: [questionId], references: [id])
@@ -287,8 +287,8 @@ model Part3Question {
   audioUrl            String
   imageUrls           String[]
   part3Id             String
-  explainId           String?                @unique
-  topicId             String?                @unique
+  explainId           String?
+  topicId             String?
   groupPart3Questions MappingPart3Question[]
   explain             Explain?               @relation(fields: [explainId], references: [id])
   part3               Part3                  @relation(fields: [part3Id], references: [id])
@@ -326,8 +326,8 @@ model Part4Question {
   audioUrl            String
   imageUrls           String[]
   part4Id             String
-  explainId           String?                @unique
-  topicId             String?                @unique
+  explainId           String?
+  topicId             String?
   groupPart4Questions MappingPart4Question[]
   explain             Explain?               @relation(fields: [explainId], references: [id])
   part4               Part4                  @relation(fields: [part4Id], references: [id])
@@ -364,8 +364,8 @@ model Part5Question {
   createdAt  DateTime @default(now())
   part5Id    String
   questionId String
-  explainId  String?  @unique
-  topicId    String?  @unique
+  explainId  String?
+  topicId    String?
   explain    Explain? @relation(fields: [explainId], references: [id])
   part5      Part5    @relation(fields: [part5Id], references: [id])
   question   Question @relation(fields: [questionId], references: [id])
@@ -392,8 +392,8 @@ model Part6Question {
   createdAt           DateTime               @default(now())
   imageUrls           String[]
   part6Id             String
-  explainId           String?                @unique
-  topicId             String?                @unique
+  explainId           String?
+  topicId             String?
   groupPart6Questions MappingPart6Question[]
   explain             Explain?               @relation(fields: [explainId], references: [id])
   part6               Part6                  @relation(fields: [part6Id], references: [id])
@@ -430,8 +430,8 @@ model Part7Question {
   createdAt           DateTime               @default(now())
   imageUrls           String[]
   part7Id             String
-  explainId           String?                @unique
-  topicId             String?                @unique
+  explainId           String?
+  topicId             String?
   groupPart7Questions MappingPart7Question[]
   explain             Explain?               @relation(fields: [explainId], references: [id])
   part7               Part7                  @relation(fields: [part7Id], references: [id])
@@ -470,30 +470,30 @@ model Question {
 }
 
 model Topic {
-  id            String         @id @default(uuid())
+  id            String          @id @default(uuid())
   name          String
-  Part1Question Part1Question?
-  Part2Question Part2Question?
-  Part3Question Part3Question?
-  Part4Question Part4Question?
-  Part5Question Part5Question?
-  Part6Question Part6Question?
-  Part7Question Part7Question?
+  Part1Question Part1Question[]
+  Part2Question Part2Question[]
+  Part3Question Part3Question[]
+  Part4Question Part4Question[]
+  Part5Question Part5Question[]
+  Part6Question Part6Question[]
+  Part7Question Part7Question[]
 
   @@index([id])
 }
 
 model Explain {
-  id            String         @id @default(uuid())
+  id            String          @id @default(uuid())
   explain       String
   answer        Answer
-  Part1Question Part1Question?
-  Part2Question Part2Question?
-  Part3Question Part3Question?
-  Part4Question Part4Question?
-  Part5Question Part5Question?
-  Part6Question Part6Question?
-  Part7Question Part7Question?
+  Part1Question Part1Question[]
+  Part2Question Part2Question[]
+  Part3Question Part3Question[]
+  Part4Question Part4Question[]
+  Part5Question Part5Question[]
+  Part6Question Part6Question[]
+  Part7Question Part7Question[]
 
   @@index([id])
 }
