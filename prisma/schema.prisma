@@ -29,6 +29,7 @@ model User {
   Part1            Part1[]
   Payment          Payment[]
   rank             Rank?              @relation(fields: [rankId], references: [id])
+  Part2            Part2[]
 
   @@index([id, email])
 }
@@ -242,11 +243,14 @@ model Part1Question {
 model Part2 {
   id             String          @id @default(uuid())
   createdAt      DateTime        @default(now())
-  thumbnail      String
+  thumbnail      String?
+  creatorId      String?
   duration       Int?
-  introduction   String
-  numOfQuestions Int
+  introduction   String?
+  numOfQuestions Int?
+  title          String?
   exams          Exam[]
+  creator        User?           @relation(fields: [creatorId], references: [id])
   part2Questions Part2Question[]
 
   @@index([id])
@@ -260,6 +264,7 @@ model Part2Question {
   part2Id    String
   explainId  String?
   topicId    String?
+  position   Int?
   explain    Explain? @relation(fields: [explainId], references: [id])
   part2      Part2    @relation(fields: [part2Id], references: [id])
   question   Question @relation(fields: [questionId], references: [id])

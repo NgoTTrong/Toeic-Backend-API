@@ -27,8 +27,9 @@ export class CourseController {
   }
 
   @Get('/get-all-of-user')
-  findAll(@GetUser() user: Payload) {
-    return this.courseService.findAllCourseOfUser(user.id);
+  @Public()
+  findAll(@Query('userId') userId: string) {
+    return this.courseService.findAllCourseOfUser(userId);
   }
 
   @Get('all')
