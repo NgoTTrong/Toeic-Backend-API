@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Comment } from './dto/comment.dto';
-import { TransformerService } from 'src/transformerService/transformer.service';
+import { TransformerService } from 'src/features/transformerService/transformer.service';
 
 let SampleCommentsData: Comment[] = [
   {

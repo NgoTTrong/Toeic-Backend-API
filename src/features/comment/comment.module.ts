@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { CommentController } from './comment.controller';
-import { TransformerService } from 'src/transformerService/transformer.service';
+import { TransformerService } from 'src/features/transformerService/transformer.service';
 
 @Module({
   controllers: [CommentController],
