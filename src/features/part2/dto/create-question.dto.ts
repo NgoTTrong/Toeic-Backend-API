@@ -8,15 +8,10 @@ export class CreateQuestionDto {
     optionB: string;
     optionC: string;
     optionD?: string;
+    answer: string;
+    topicId: string;
+    explain: string;
   };
-  @IsString()
-  correctAnswer: string;
-
-  @IsString()
-  topicId: string;
-
-  @IsString()
-  explaination: string;
 
   @IsString()
   audioUrl: string;

@@ -10,18 +10,10 @@ export class UpdateQuestionDto {
     optionB?: string;
     optionC?: string;
     optionD?: string;
+    answer?: string;
+    explain?: string;
+    topicId?: string;
   };
-  @IsObject()
-  @IsOptional()
-  explain: {
-    id: string;
-    correctAnswer?: string;
-    explaination?: string;
-  };
-
-  @IsString()
-  @IsOptional()
-  topicId: string;
 
   @IsString()
   @IsOptional()

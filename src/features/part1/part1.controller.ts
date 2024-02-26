@@ -40,10 +40,10 @@ export class Part1Controller {
   ) {
     return this.part1Service.updateQuestion(id, updateQuestion);
   }
-  @Post()
-  create(@Body() createPart1Dto: CreatePart1Dto) {
-    return this.part1Service.create(createPart1Dto);
-  }
+  // @Post()
+  // create(@Body() createPart1Dto: CreatePart1Dto) {
+  //   return this.part1Service.create(createPart1Dto);
+  // }
 
   @Get()
   findAll(@GetUser() user: Payload) {

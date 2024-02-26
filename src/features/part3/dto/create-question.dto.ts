@@ -1,21 +1,22 @@
-import { IsObject, IsString } from 'class-validator';
+import { IsArray, IsObject, IsOptional, IsString } from 'class-validator';
 
 export class CreateQuestionDto {
-  @IsObject()
-  question: {
+  @IsArray()
+  questions: {
     content: string;
     optionA: string;
     optionB: string;
     optionC: string;
     optionD?: string;
     answer: string;
-    topicId: string;
     explain: string;
-  };
+    topicId: string;
+  }[];
+
+  @IsString()
+  @IsOptional()
+  imageUrl: string;
 
   @IsString()
   audioUrl: string;
-
-  @IsString()
-  imageUrl: string;
 }

@@ -14,7 +14,6 @@ export class CreatePart2Dto {
       optionA: string;
       optionB: string;
       optionC: string;
-      optionD?: string;
     };
     topicId?: string;
     explain?: {
