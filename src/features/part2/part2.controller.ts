@@ -65,9 +65,15 @@ export class Part2Controller {
   remove(@Param('id') id: string) {
     return this.part2Service.remove(id);
   }
+  @Delete('/delete-question/:id')
+  @Public()
+  removeQuestion(@Param('id') id: string) {
+    return this.part2Service.removeQuestion(id);
+  }
+
   @Post(':id/questions/reorder')
   @Public()
-  reorderChapter(@Param('id') id: string, @Body() reorderDto: ReorderDto) {
+  reorderQuestion(@Param('id') id: string, @Body() reorderDto: ReorderDto) {
     return this.part2Service.reorderQuestions(id, reorderDto.reorderData);
   }
 }

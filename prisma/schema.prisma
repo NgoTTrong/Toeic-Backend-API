@@ -303,16 +303,19 @@ model MappingPart3Question {
   question        Question      @relation(fields: [questionId], references: [id])
 
   @@id([part3QuestionId, questionId])
+  @@unique([part3QuestionId, questionId])
   @@index([part3QuestionId, questionId])
 }
 
 model Part4 {
   id             String          @id @default(uuid())
   createdAt      DateTime        @default(now())
-  thumbnail      String
+  thumbnail      String?
   duration       Int?
-  introduction   String
-  numOfQuestions Int
+  introduction   String?
+  numOfQuestions Int?
+  title          String?
+  creatorId      String?
   exams          Exam[]
   part4Questions Part4Question[]
 
@@ -325,6 +328,7 @@ model Part4Question {
   audioUrl            String
   imageUrls           String[]
   part4Id             String
+  position            Int?
   groupPart4Questions MappingPart4Question[]
   part4               Part4                  @relation(fields: [part4Id], references: [id])
 
@@ -336,18 +340,22 @@ model MappingPart4Question {
   questionId      String
   part4Question   Part4Question @relation(fields: [part4QuestionId], references: [id])
   question        Question      @relation(fields: [questionId], references: [id])
+  position        Int?
 
   @@id([questionId, part4QuestionId])
+  @@unique([part4QuestionId, questionId])
   @@index([part4QuestionId, questionId])
 }
 
 model Part5 {
   id             String          @id @default(uuid())
   createdAt      DateTime        @default(now())
-  thumbnail      String
+  thumbnail      String?
   duration       Int?
-  introduction   String
-  numOfQuestions Int
+  introduction   String?
+  numOfQuestions Int?
+  title          String?
+  creatorId      String?
   exams          Exam[]
   part5Questions Part5Question[]
 
@@ -359,6 +367,7 @@ model Part5Question {
   createdAt  DateTime @default(now())
   part5Id    String
   questionId String
+  position   Int?
   part5      Part5    @relation(fields: [part5Id], references: [id])
   question   Question @relation(fields: [questionId], references: [id])
 
@@ -368,10 +377,12 @@ model Part5Question {
 model Part6 {
   id             String          @id @default(uuid())
   createdAt      DateTime        @default(now())
-  thumbnail      String
+  thumbnail      String?
   duration       Int?
-  introduction   String
-  numOfQuestions Int
+  introduction   String?
+  numOfQuestions Int?
+  title          String?
+  creatorId      String?
   exams          Exam[]
   part6Questions Part6Question[]
 
@@ -383,6 +394,7 @@ model Part6Question {
   createdAt           DateTime               @default(now())
   imageUrls           String[]
   part6Id             String
+  position            Int?
   groupPart6Questions MappingPart6Question[]
   part6               Part6                  @relation(fields: [part6Id], references: [id])
 
@@ -394,18 +406,22 @@ model MappingPart6Question {
   questionId      String
   part6Question   Part6Question @relation(fields: [part6QuestionId], references: [id])
   question        Question      @relation(fields: [questionId], references: [id])
+  position        Int?
 
   @@id([part6QuestionId, questionId])
+  @@unique([questionId, part6QuestionId])
   @@index([questionId, part6QuestionId])
 }
 
 model Part7 {
   id             String          @id @default(uuid())
   createdAt      DateTime        @default(now())
-  thumbnail      String
+  thumbnail      String?
   duration       Int?
-  introduction   String
-  numOfQuestions Int
+  introduction   String?
+  numOfQuestions Int?
+  title          String?
+  creatorId      String?
   exams          Exam[]
   part7Question  Part7Question[]
 
@@ -417,6 +433,7 @@ model Part7Question {
   createdAt           DateTime               @default(now())
   imageUrls           String[]
   part7Id             String
+  position            Int?
   groupPart7Questions MappingPart7Question[]
   part7               Part7                  @relation(fields: [part7Id], references: [id])
 
@@ -428,8 +445,10 @@ model MappingPart7Question {
   questionId      String
   part7Question   Part7Question @relation(fields: [part7QuestionId], references: [id])
   question        Question      @relation(fields: [questionId], references: [id])
+  position        Int?
 
   @@id([part7QuestionId, questionId])
+  @@unique([part7QuestionId, questionId])
   @@index([part7QuestionId, questionId])
 }
 

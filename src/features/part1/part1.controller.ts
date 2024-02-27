@@ -65,6 +65,11 @@ export class Part1Controller {
   remove(@Param('id') id: string) {
     return this.part1Service.remove(id);
   }
+  @Delete('/delete-question/:id')
+  @Public()
+  removeQuestion(@Param('id') id: string) {
+    return this.part1Service.removeQuestion(id);
+  }
   @Post(':id/questions/reorder')
   @Public()
   reorderChapter(@Param('id') id: string, @Body() reorderDto: ReorderDto) {

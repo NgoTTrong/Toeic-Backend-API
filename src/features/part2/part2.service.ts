@@ -115,6 +115,27 @@ export class Part2Service {
   remove(id: string) {
     return this.prismaService.part2.delete({ where: { id } });
   }
+  async removeQuestion(part2QuestionId: string) {
+    const part2Question = await this.prismaService.part2Question.findFirst({
+      where: { id: part2QuestionId },
+    });
+    if (!part2Question) {
+      throw new BadRequestException('Part2 Question not found!');
+    }
+    await this.prismaService.part2Question.delete({
+      where: {
+        id: part2Question?.id,
+        questionId: part2Question?.questionId,
+      },
+    });
+    await this.prismaService.question.delete({
+      where: {
+        id: part2Question?.questionId,
+      },
+    });
+
+    return part2Question.id;
+  }
 
   async createpart2Question(part2Id: string, dto: CreateQuestionDto) {
     const _question = await this.prismaService.question.create({

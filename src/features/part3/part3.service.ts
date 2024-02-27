@@ -79,6 +79,9 @@ export class Part3Service {
               include: {
                 question: true,
               },
+              orderBy: {
+                position: 'asc',
+              },
             },
           },
           orderBy: {
@@ -111,6 +114,7 @@ export class Part3Service {
             id: question.id,
           },
           data: {
+            content: question?.content,
             optionA: question?.optionA,
             optionB: question?.optionB,
             optionC: question?.optionC,
@@ -127,7 +131,43 @@ export class Part3Service {
   remove(id: string) {
     return this.prismaService.part3.delete({ where: { id } });
   }
+  async removeGroup(part3QuestionId: string) {
+    const part3Question = await this.prismaService.part3Question.findFirst({
+      where: { id: part3QuestionId },
+    });
+    if (!part3Question) {
+      throw new BadRequestException('Part 3 question is not found!');
+    }
+    const _questions = await this.prismaService.mappingPart3Question.findMany({
+      where: { part3QuestionId },
+    });
+    await Promise.all(
+      _questions.map((question) =>
+        this.prismaService.mappingPart3Question.delete({
+          where: {
+            part3QuestionId_questionId: {
+              part3QuestionId: question?.part3QuestionId,
+              questionId: question?.questionId,
+            },
+          },
+        }),
+      ),
+    );
+    await Promise.all(
+      _questions.map((question) =>
+        this.prismaService.question.delete({
+          where: {
+            id: question.questionId,
+          },
+        }),
+      ),
+    );
 
+    await this.prismaService.part3Question.delete({
+      where: { id: part3QuestionId },
+    });
+    return part3Question.id;
+  }
   async createPart3Question(part3Id: string, dto: CreateQuestionDto) {
     const _questions = await Promise.all(
       dto.questions.map(async (question) => {
@@ -154,7 +194,15 @@ export class Part3Service {
         audioUrl: dto.audioUrl,
         part3Id,
         position: lastQuestion ? lastQuestion?.position + 1 : 1,
+        imageUrls: dto?.imageUrl ? [dto.imageUrl] : [],
       },
+    });
+    await this.prismaService.mappingPart3Question.createMany({
+      data: _questions.map((questionId, index) => ({
+        questionId,
+        part3QuestionId: _part3Question.id,
+        position: index + 1,
+      })),
     });
     return _part3Question;
   }

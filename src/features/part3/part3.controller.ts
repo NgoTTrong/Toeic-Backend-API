@@ -65,6 +65,12 @@ export class Part3Controller {
   remove(@Param('id') id: string) {
     return this.part3Service.remove(id);
   }
+
+  @Delete('/delete-question/:id')
+  @Public()
+  removeGroupQuestion(@Param('id') id: string) {
+    return this.part3Service.removeGroup(id);
+  }
   @Post(':id/questions/reorder')
   @Public()
   reorderChapter(@Param('id') id: string, @Body() reorderDto: ReorderDto) {
