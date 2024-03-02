@@ -1,3 +1,4 @@
+import { IsOptional, IsObject, IsString } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
 import { CreatePart5Dto } from './create-part5.dto';
 

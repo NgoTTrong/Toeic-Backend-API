@@ -1,27 +1,15 @@
-import { Answer } from '@prisma/client';
-import { IsArray, IsString } from 'class-validator';
+
+import { IsOptional, IsString } from 'class-validator';
 
 export class CreatePart4Dto {
   @IsString()
-  thumbnail: string;
+  title: string;
+
   @IsString()
+  @IsOptional()
+  thumbnail: string;
+
+  @IsString()
+  @IsOptional()
   introduction: string;
-  @IsArray()
-  questions: {
-    audioUrl: string;
-    imageUrls: string[];
-    questions: {
-      content: string;
-      optionA: string;
-      optionB: string;
-      optionC: string;
-      optionD?: string;
-    }[];
-    topicId?: number;
-    explain?: {
-      explain: string;
-      images: string[];
-      answer: Answer;
-    };
-  }[];
 }

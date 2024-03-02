@@ -31,6 +31,10 @@ model User {
   rank             Rank?              @relation(fields: [rankId], references: [id])
   Part2            Part2[]
   Part3            Part3[]
+  Part4            Part4[]
+  Part5            Part5[]
+  Part6            Part6[]
+  Part7            Part7[]
 
   @@index([id, email])
 }
@@ -317,6 +321,7 @@ model Part4 {
   title          String?
   creatorId      String?
   exams          Exam[]
+  creator        User?           @relation(fields: [creatorId], references: [id])
   part4Questions Part4Question[]
 
   @@index([id])
@@ -357,6 +362,7 @@ model Part5 {
   title          String?
   creatorId      String?
   exams          Exam[]
+  creator        User?           @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   part5Questions Part5Question[]
 
   @@index([id])
@@ -384,6 +390,7 @@ model Part6 {
   title          String?
   creatorId      String?
   exams          Exam[]
+  creator        User?           @relation(fields: [creatorId], references: [id])
   part6Questions Part6Question[]
 
   @@index([id])
@@ -404,13 +411,13 @@ model Part6Question {
 model MappingPart6Question {
   part6QuestionId String
   questionId      String
+  position        Int?
   part6Question   Part6Question @relation(fields: [part6QuestionId], references: [id])
   question        Question      @relation(fields: [questionId], references: [id])
-  position        Int?
 
   @@id([part6QuestionId, questionId])
-  @@unique([questionId, part6QuestionId])
-  @@index([questionId, part6QuestionId])
+  @@unique([part6QuestionId, questionId])
+  @@index([part6QuestionId, questionId])
 }
 
 model Part7 {
@@ -423,7 +430,8 @@ model Part7 {
   title          String?
   creatorId      String?
   exams          Exam[]
-  part7Question  Part7Question[]
+  creator        User?           @relation(fields: [creatorId], references: [id])
+  part7Questions Part7Question[]
 
   @@index([id])
 }
@@ -443,9 +451,9 @@ model Part7Question {
 model MappingPart7Question {
   part7QuestionId String
   questionId      String
+  position        Int?
   part7Question   Part7Question @relation(fields: [part7QuestionId], references: [id])
   question        Question      @relation(fields: [questionId], references: [id])
-  position        Int?
 
   @@id([part7QuestionId, questionId])
   @@unique([part7QuestionId, questionId])

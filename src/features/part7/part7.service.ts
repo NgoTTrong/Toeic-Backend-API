@@ -1,79 +1,200 @@
-import { Injectable } from '@nestjs/common';
-import { CreatePart7Dto } from './dto/create-part7.dto';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { UpdatePart7Dto } from './dto/update-part7.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { UpdateQuestionDto } from './dto/update-question.dto';
+import { Answer } from '@prisma/client';
+import { CreateQuestionDto } from './dto/create-question.dto';
 
 @Injectable()
 export class Part7Service {
   constructor(private readonly prismaService: PrismaService) {}
-
-  // async create(CreatePart7Dto: CreatePart7Dto) {
-  //   //Create part 7
-  //   const _part7 = await this.prismaService.part7.create({
-  //     data: {
-  //       thumbnail: CreatePart7Dto.thumbnail,
-  //       introduction: CreatePart7Dto.introduction,
-  //       numOfQuestions: CreatePart7Dto.questions.length,
-  //     },
-  //   });
-  //   // Create part 7 child
-  //   await Promise.all(
-  //     CreatePart7Dto.questions.map(async (question) => {
-  //       let _explain: Explain;
-  //       // Create explain if exist
-  //       if (question?.explain) {
-  //         _explain = await this.prismaService.explain.create({
-  //           data: question.explain,
-  //         });
-  //       }
-  //       //Create part 7 question
-  //       const _part7Question = await this.prismaService.part7Question.create({
-  //         data: {
-  //           imageUrls: question.imageUrls,
-  //           part7Id: _part7.id,
-  //           explainId: _explain?.id,
-  //         },
-  //       });
-  //       // Create part 7 question childs
-  //       await Promise.all(
-  //         question.questions.map(async (_question) => {
-  //           // Create question
-  //           const createdQuestion = await this.prismaService.question.create({
-  //             data: {
-  //               content: _question.content,
-  //               optionA: _question.optionA,
-  //               optionB: _question.optionB,
-  //               optionC: _question.optionC,
-  //               optionD: _question.optionD,
-  //             },
-  //           });
-  //           //Add to mapping table
-  //           await this.prismaService.mappingPart7Question.create({
-  //             data: {
-  //               questionId: createdQuestion.id,
-  //               part7QuestionId: _part7Question.id,
-  //             },
-  //           });
-  //         }),
-  //       );
-  //     }),
-  //   );
-  //   return 'Done';
-  // }
-
-  findAll() {
-    return this.prismaService.part6.findMany({});
+  
+  async create(title: string, userId: string) {
+    return this.prismaService.part7.create({
+      data: {
+        title: title,
+        creatorId: userId,
+      },
+    });
   }
 
-  findOne(id: string) {
-    return this.prismaService.part7.findFirst({ where: { id } });
+  async findAll(userId: string) {
+    return this.prismaService.part7.findMany({
+      where: {
+        creatorId: userId,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
   }
 
-  update(id: string, updatePart7Dto: UpdatePart7Dto) {
-    return `This action updates a #${id} part7`;
+  async findOne(id: string, userId: string) {
+    return this.prismaService.part7.findFirst({
+      where: { id, creatorId: userId },
+      include: {
+        part7Questions: {
+          include: {
+            groupPart7Questions: {
+              include: {
+                question: true,
+              },
+              orderBy: {
+                position: 'asc',
+              },
+            },
+          },
+          orderBy: {
+            position: 'asc',
+          },
+        },
+      },
+    });
   }
 
-  remove(id: string) {
+  async update(id: string, updatePart7Dto: UpdatePart7Dto) {
+    return this.prismaService.part7.update({
+      where: { id },
+      data: updatePart7Dto,
+    });
+  }
+
+  async updateQuestion(part7QuestionId: string, dto: UpdateQuestionDto) {
+    const _part7Question = await this.prismaService.part7Question.update({
+      where: { id: part7QuestionId },
+      data: {
+        imageUrls: dto?.imageUrl ? [dto?.imageUrl] : []
+      },
+    });
+
+    await Promise.all(
+      dto.questions.map((question) =>
+        this.prismaService.question.update({
+          where: {
+            id: question.id,
+          },
+          data: {
+            content: question?.content,
+            optionA: question?.optionA,
+            optionB: question?.optionB,
+            optionC: question?.optionC,
+            optionD: question?.optionD,
+            explain: question?.explain,
+            answer: question?.answer as Answer,
+            topicId: question?.topicId,
+          },
+        }),
+      ),
+    );
+    return _part7Question;
+  }
+
+  async remove(id: string) {
     return this.prismaService.part7.delete({ where: { id } });
   }
+
+  async removeGroup(part7QuestionId: string) {
+    const part7Question = await this.prismaService.part7Question.findFirst({
+      where: { id: part7QuestionId },
+    });
+    if (!part7Question) {
+      throw new BadRequestException('Part 7 question is not found!');
+    }
+    const _questions = await this.prismaService.mappingPart7Question.findMany({
+      where: { part7QuestionId },
+    });
+    await Promise.all(
+      _questions.map((question) =>
+        this.prismaService.mappingPart7Question.delete({
+          where: {
+            part7QuestionId_questionId: {
+              part7QuestionId: question?.part7QuestionId,
+              questionId: question?.questionId,
+            },
+          },
+        }),
+      ),
+    );
+    await Promise.all(
+      _questions.map((question) =>
+        this.prismaService.question.delete({
+          where: {
+            id: question.questionId,
+          },
+        }),
+      ),
+    );
+
+    await this.prismaService.part7Question.delete({
+      where: { id: part7QuestionId },
+    });
+    return part7Question.id;
+  }
+
+  async createPart7Question(part7Id: string, dto: CreateQuestionDto) {
+    const _questions = await Promise.all(
+      dto.questions.map(async (question) => {
+        const _question = await this.prismaService.question.create({
+          data: {
+            ...question,
+            answer: question?.answer as Answer,
+          },
+        });
+        return _question?.id;
+      }),
+    );
+
+    const lastQuestion = await this.prismaService.part7Question.findFirst({
+      where: {
+        part7Id,
+      },
+      orderBy: {
+        position: 'desc',
+      },
+    });
+    const _part7Question = await this.prismaService.part7Question.create({
+      data: {
+        part7Id,
+        position: lastQuestion ? lastQuestion?.position + 1 : 1,
+        imageUrls: dto?.imageUrl ? [dto.imageUrl] : [],
+      },
+    });
+    await this.prismaService.mappingPart7Question.createMany({
+      data: _questions.map((questionId, index) => ({
+        questionId,
+        part7QuestionId: _part7Question.id,
+        position: index + 1,
+      })),
+    });
+    return _part7Question;
+  }
+
+  async reorderQuestions(
+    part7Id: string,
+    updateData: { id: string; position: number }[],
+  ) {
+    const _part7 = await this.prismaService.part7.findFirst({
+      where: { id: part7Id },
+    });
+    if (!_part7) {
+      throw new BadRequestException('Part 7 is not found!');
+    }
+    return await Promise.all(
+      updateData.map((question) =>
+        this.prismaService.part7Question.update({
+          where: {
+            part7Id,
+            id: question?.id,
+          },
+          data: {
+            position: question?.position,
+          },
+        }),
+      ),
+    );
+  }
+
+
+
+  
 }
