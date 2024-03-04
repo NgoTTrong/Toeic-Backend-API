@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreatePart1Dto } from './dto/create-part1.dto';
 import { UpdatePart1Dto } from './dto/update-part1.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Answer, Explain } from '@prisma/client';
+import { Answer } from '@prisma/client';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 
@@ -18,45 +18,37 @@ export class Part1Service {
       },
     });
   }
-  async create(createPart1Dto: CreatePart1Dto) {
-    const _part1 = await this.prismaService.part1.create({
-      data: {
-        thumbnail: createPart1Dto.thumbnail,
-        introduction: createPart1Dto.introduction,
-        numOfQuestions: createPart1Dto.questions.length,
-      },
-    });
-    await Promise.all(
-      createPart1Dto.questions.map(async (question) => {
-        let _explain: Explain;
-        if (question?.explain) {
-          _explain = await this.prismaService.explain.create({
-            data: question.explain,
-          });
-        }
-        const createdQuestion = await this.prismaService.question.create({
-          data: {
-            content: question.question.content,
-            optionA: question.question.optionA,
-            optionB: question.question.optionB,
-            optionC: question.question.optionC,
-            optionD: question.question.optionD,
-          },
-        });
-        return await this.prismaService.part1Question.create({
-          data: {
-            imageUrls: question.imageUrls,
-            audioUrl: question.audioUrl,
-            questionId: createdQuestion.id,
-            part1Id: _part1.id,
-            explainId: _explain?.id,
-            topicId: question.topicId,
-          },
-        });
-      }),
-    );
-    return 'Done';
-  }
+  // async create(createPart1Dto: CreatePart1Dto) {
+  //   const _part1 = await this.prismaService.part1.create({
+  //     data: {
+  //       thumbnail: createPart1Dto.thumbnail,
+  //       introduction: createPart1Dto.introduction,
+  //       numOfQuestions: createPart1Dto.questions.length,
+  //     },
+  //   });
+  //   await Promise.all(
+  //     createPart1Dto.questions.map(async (question) => {
+  //       const createdQuestion = await this.prismaService.question.create({
+  //         data: {
+  //           content: question.question.content,
+  //           optionA: question.question.optionA,
+  //           optionB: question.question.optionB,
+  //           optionC: question.question.optionC,
+  //           optionD: question.question.optionD,
+  //           explain:
+  //         },
+  //       });
+  //       return await this.prismaService.part1Question.create({
+  //         data: {
+  //           imageUrls: question.imageUrls,
+  //           audioUrl: question.audioUrl,
+  //           questionId: createdQuestion.id,
+  //         },
+  //       });
+  //     }),
+  //   );
+  //   return 'Done';
+  // }
 
   findAll(userId: string) {
     return this.prismaService.part1.findMany({
@@ -76,7 +68,6 @@ export class Part1Service {
         part1Questions: {
           include: {
             question: true,
-            explain: true,
           },
           orderBy: {
             position: 'asc',
@@ -98,18 +89,9 @@ export class Part1Service {
       data: {
         audioUrl: dto.audioUrl ?? undefined,
         imageUrls: dto.imageUrl ? [dto.imageUrl] : undefined,
-        topicId: dto.topicId ?? undefined,
       },
     });
-    await this.prismaService.explain.update({
-      where: {
-        id: dto?.explain?.id,
-      },
-      data: {
-        explain: dto?.explain?.explaination,
-        answer: dto?.explain?.correctAnswer as Answer,
-      },
-    });
+
     await this.prismaService.question.update({
       where: {
         id: dto?.question?.id,
@@ -120,6 +102,8 @@ export class Part1Service {
         optionB: dto?.question?.optionB,
         optionC: dto?.question?.optionC,
         optionD: dto?.question?.optionD,
+        explain: dto?.question?.explain,
+        answer: dto?.question?.answer as Answer,
       },
     });
     return _part1Question;
@@ -127,17 +111,35 @@ export class Part1Service {
   remove(id: string) {
     return this.prismaService.part1.delete({ where: { id } });
   }
-
-  async createPart1Question(part1Id: string, dto: CreateQuestionDto) {
-    const _question = await this.prismaService.question.create({
-      data: dto.question,
+  async removeQuestion(part1QuestionId: string) {
+    const part1Question = await this.prismaService.part1Question.findFirst({
+      where: { id: part1QuestionId },
     });
-    const _explain = await this.prismaService.explain.create({
-      data: {
-        explain: dto.explaination,
-        answer: dto.correctAnswer as Answer,
+    if (!part1Question) {
+      throw new BadRequestException('Part1 Question not found!');
+    }
+    await this.prismaService.part1Question.delete({
+      where: {
+        id: part1Question?.id,
+        questionId: part1Question?.questionId,
       },
     });
+    await this.prismaService.question.delete({
+      where: {
+        id: part1Question?.questionId,
+      },
+    });
+
+    return part1Question.id;
+  }
+  async createPart1Question(part1Id: string, dto: CreateQuestionDto) {
+    const _question = await this.prismaService.question.create({
+      data: {
+        ...dto.question,
+        answer: dto?.question?.answer as Answer,
+      },
+    });
+
     const lastQuestion = await this.prismaService.part1Question.findFirst({
       where: {
         part1Id,
@@ -151,10 +153,8 @@ export class Part1Service {
         imageUrls: [dto.imageUrl],
         audioUrl: dto.audioUrl,
         questionId: _question.id,
-        explainId: _explain.id,
         part1Id,
         position: lastQuestion ? lastQuestion?.position + 1 : 1,
-        topicId: dto.topicId,
       },
     });
     return _part1Question;

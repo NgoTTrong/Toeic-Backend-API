@@ -15,10 +15,10 @@ import { UpdatePart4Dto } from './dto/update-part4.dto';
 export class Part4Controller {
   constructor(private readonly part4Service: Part4Service) {}
 
-  @Post()
-  create(@Body() createPart4Dto: CreatePart4Dto) {
-    return this.part4Service.create(createPart4Dto);
-  }
+  // @Post()
+  // create(@Body() createPart4Dto: CreatePart4Dto) {
+  //   return this.part4Service.create(createPart4Dto);
+  // }
 
   @Get()
   findAll() {

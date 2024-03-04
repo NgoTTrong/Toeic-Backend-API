@@ -13,4 +13,6 @@ export const environments = {
   clientId: env.CLIENT_ID,
   clientSecret: env.CLIENT_SECRET,
   transport: env.TRANSPORT,
+  hfAccessToken: env.HF_ACCESS_TOKEN,
+  model: env.MODEL,
 };

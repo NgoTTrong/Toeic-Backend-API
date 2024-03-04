@@ -32,7 +32,6 @@ import { ChatbotModule } from './features/chatbot/chatbot.module';
       },
     }),
     FeaturesModule,
-
     ChatbotModule,
     GroupCommentModule,
     PostModule,

@@ -40,10 +40,10 @@ export class Part1Controller {
   ) {
     return this.part1Service.updateQuestion(id, updateQuestion);
   }
-  @Post()
-  create(@Body() createPart1Dto: CreatePart1Dto) {
-    return this.part1Service.create(createPart1Dto);
-  }
+  // @Post()
+  // create(@Body() createPart1Dto: CreatePart1Dto) {
+  //   return this.part1Service.create(createPart1Dto);
+  // }
 
   @Get()
   findAll(@GetUser() user: Payload) {
@@ -64,6 +64,11 @@ export class Part1Controller {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.part1Service.remove(id);
+  }
+  @Delete('/delete-question/:id')
+  @Public()
+  removeQuestion(@Param('id') id: string) {
+    return this.part1Service.removeQuestion(id);
   }
   @Post(':id/questions/reorder')
   @Public()

@@ -1,9 +1,9 @@
-import { IsObject, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsObject, IsOptional, IsString } from 'class-validator';
 
 export class UpdateQuestionDto {
-  @IsObject()
+  @IsArray()
   @IsOptional()
-  question: {
+  questions: {
     id: string;
     content?: string;
     optionA?: string;
@@ -13,7 +13,7 @@ export class UpdateQuestionDto {
     answer?: string;
     explain?: string;
     topicId?: string;
-  };
+  }[];
 
   @IsString()
   @IsOptional()

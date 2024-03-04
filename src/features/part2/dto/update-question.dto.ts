@@ -9,7 +9,6 @@ export class UpdateQuestionDto {
     optionA?: string;
     optionB?: string;
     optionC?: string;
-    optionD?: string;
     answer?: string;
     explain?: string;
     topicId?: string;
@@ -18,8 +17,4 @@ export class UpdateQuestionDto {
   @IsString()
   @IsOptional()
   audioUrl: string;
-
-  @IsString()
-  @IsOptional()
-  imageUrl: string;
 }

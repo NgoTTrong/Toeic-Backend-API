@@ -15,7 +15,4 @@ export class CreateQuestionDto {
 
   @IsString()
   audioUrl: string;
-
-  @IsString()
-  imageUrl: string;
 }

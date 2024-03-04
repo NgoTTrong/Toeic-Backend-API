@@ -25,7 +25,7 @@ export class CourseService {
   async getAll(userId: string) {
     return this.prismaService.course.findMany({ where: { userId: userId } });
   }
-  async findAllCourseOfUser(userId: string) {
+  async findAllCourseOfUser(userId?: string) {
     const purchaseCourses = await this.prismaService.payment.findMany({
       where: {
         userId,

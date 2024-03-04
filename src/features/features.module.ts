@@ -17,6 +17,7 @@ import { FeedCategoryModule } from './feed-category/feed-category.module';
 import { CourseCategoryModule } from './course-category/course-category.module';
 import { TopicModule } from './topic/topic.module';
 import { PaymentModule } from './payment/payment.module';
+import { CommentModule } from './comment/comment.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { PaymentModule } from './payment/payment.module';
     ChapterModule,
     UserProgressModule,
     FeedCategoryModule,
+    CommentModule,
   ],
   controllers: [],
   providers: [],
