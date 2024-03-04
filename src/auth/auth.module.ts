@@ -6,10 +6,12 @@ import { AuthGuard } from './guard/auth.guard';
 import { JwtService } from '@nestjs/jwt';
 import { GoogleStrategy } from './google.strategy';
 import { UserService } from 'src/features/user/user.service';
+import supabaseClientProvider from 'src/supabase/supabase.provider';
 
 @Module({
   controllers: [AuthController],
   providers: [
+    supabaseClientProvider,
     AuthService,
     UserService,
     JwtService,
