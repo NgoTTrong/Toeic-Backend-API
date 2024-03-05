@@ -6,10 +6,10 @@ export class ExamCategoryService {
   constructor(private readonly prismaService: PrismaService) {}
 
   findAll() {
-    return this.prismaService.courseCategory.findMany();
+    return this.prismaService.examCategory.findMany();
   }
   create(names: string[]) {
-    return this.prismaService.courseCategory.createMany({
+    return this.prismaService.examCategory.createMany({
       data: names.map((name) => ({ name })),
     });
   }

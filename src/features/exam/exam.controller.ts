@@ -10,7 +10,7 @@ import {
 import { ExamService } from './exam.service';
 import { CreateExamDto } from './dto/create-exam.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
-import { GetUser } from 'src/core/decorators';
+import { GetUser, Public } from 'src/core/decorators';
 import { Payload } from 'src/core/type/jwt.payload';
 
 @Controller('exam')
@@ -18,8 +18,8 @@ export class ExamController {
   constructor(private readonly examService: ExamService) {}
 
   @Post()
-  create(@Body() createExamDto: CreateExamDto) {
-    return this.examService.create(createExamDto);
+  create(@Body() createExamDto: CreateExamDto, @GetUser() user: Payload) {
+    return this.examService.create(createExamDto, user.id);
   }
 
   @Get()
@@ -28,13 +28,15 @@ export class ExamController {
   }
 
   @Get(':id')
+  @Public()
   findOne(@Param('id') id: string) {
-    return this.examService.findOne(+id);
+    return this.examService.findOne(id);
   }
 
   @Patch(':id')
+  @Public()
   update(@Param('id') id: string, @Body() updateExamDto: UpdateExamDto) {
-    return this.examService.update(+id, updateExamDto);
+    return this.examService.update(id, updateExamDto);
   }
 
   @Delete(':id')

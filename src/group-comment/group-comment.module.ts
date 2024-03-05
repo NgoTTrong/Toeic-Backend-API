@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { TransformerService } from 'src/transformerService/transformer.service';
 import supabaseClientProvider from 'src/supabase/supabase.provider';
 import { GroupCommentController } from './group-comment.controller';
 import { GroupCommentService } from './group-comment.service';
 import { UserService } from 'src/features/user/user.service';
+import { TransformerService } from 'src/features/transformerService/transformer.service';
 
 @Module({
   controllers: [GroupCommentController],

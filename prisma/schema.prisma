@@ -155,6 +155,7 @@ model Exam {
   numOfParts   Int?
   title        String
   creatorId    String?
+  isPublished Boolean @default(false)
   creator      User?         @relation(fields: [creatorId], references: [id])
   comments     CommentExam[]
   category     ExamCategory? @relation(fields: [categoryId], references: [id])
@@ -174,8 +175,8 @@ model ExamCategory {
   id         String   @id @default(uuid())
   createdAt  DateTime @default(now())
   name       String
-  color      String
-  background String
+  color      String?
+  background String?
   exams      Exam[]
 
   @@index([id])

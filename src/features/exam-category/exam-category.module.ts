@@ -6,4 +6,4 @@ import { ExamCategoryController } from './exam-category.controller';
   controllers: [ExamCategoryController],
   providers: [ExamCategoryService],
 })
-export class CourseCategoryModule {}
+export class ExamCategoryModule {}

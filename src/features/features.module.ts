@@ -18,6 +18,7 @@ import { CourseCategoryModule } from './course-category/course-category.module';
 import { TopicModule } from './topic/topic.module';
 import { PaymentModule } from './payment/payment.module';
 import { CommentModule } from './comment/comment.module';
+import { ExamCategoryModule } from './exam-category/exam-category.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { CommentModule } from './comment/comment.module';
     UserProgressModule,
     FeedCategoryModule,
     CommentModule,
+    ExamCategoryModule,
   ],
   controllers: [],
   providers: [],
