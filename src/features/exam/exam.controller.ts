@@ -1,7 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { ExamService } from './exam.service';
 import { CreateExamDto } from './dto/create-exam.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
+import { GetUser } from 'src/core/decorators';
+import { Payload } from 'src/core/type/jwt.payload';
 
 @Controller('exam')
 export class ExamController {
@@ -13,8 +23,8 @@ export class ExamController {
   }
 
   @Get()
-  findAll() {
-    return this.examService.findAll();
+  findAll(@GetUser() user: Payload) {
+    return this.examService.findAll(user?.id);
   }
 
   @Get(':id')
