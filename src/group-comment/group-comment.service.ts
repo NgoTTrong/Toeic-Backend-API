@@ -8,6 +8,7 @@ import {
 import { TransformerService } from 'src/transformerService/transformer.service';
 import { Client } from 'pg';
 import { UserService } from 'src/features/user/user.service';
+import { IComment } from './dto/comment-interface';
 
 @Injectable()
 export class GroupCommentService {
@@ -18,14 +19,14 @@ export class GroupCommentService {
   ) {}
   private readonly logger = new Logger(GroupCommentService.name);
 
-  async create(userId, postId, newComment) {
+  async create(userId, postId, newComment): Promise<IComment> {
     this.logger.log('create');
     const { message, commentParentId, group_id } = newComment;
     let level = newComment.level;
-    // const label = await this.transformersService.classifyText(content);
-    // if (label === 'NEG') {
-    //   throw new BadRequestException('Comment content is considered negative');
-    // }
+    const label = await this.transformersService.classifyText(message);
+    if (label === 'NEG') {
+      throw new BadRequestException('Comment content is considered negative');
+    }
     let query;
     let result;
     if (!commentParentId) {
@@ -67,7 +68,7 @@ export class GroupCommentService {
     }, {});
   }
 
-  async findAllByGroupId(groupId) {
+  async findAllByGroupId(groupId): Promise<IComment[]> {
     this.logger.log('findAllByGroupId', groupId);
     // const query = 'SELECT * FROM group_comments';
     const query = `
@@ -141,18 +142,18 @@ export class GroupCommentService {
   //   };
   // }
 
-  async remove(id) {
-    this.logger.log('remove');
-    const query = 'DELETE FROM group_comments WHERE id = $1 RETURNING *';
+  // async remove(id) {
+  //   this.logger.log('remove');
+  //   const query = 'DELETE FROM group_comments WHERE id = $1 RETURNING *';
 
-    const result = await this.supabaseClient.query(query, [id]);
-    if (result.rows.length == 0) {
-      throw new BadRequestException(`Comment not found with id: ${id}`);
-    }
-    return {
-      statusCode: HttpStatus.OK,
-      data: result.rows[0],
-      message: `Deleted comment successfully with id ${id}`,
-    };
-  }
+  //   const result = await this.supabaseClient.query(query, [id]);
+  //   if (result.rows.length == 0) {
+  //     throw new BadRequestException(`Comment not found with id: ${id}`);
+  //   }
+  //   return {
+  //     statusCode: HttpStatus.OK,
+  //     data: result.rows[0],
+  //     message: `Deleted comment successfully with id ${id}`,
+  //   };
+  // }
 }

@@ -6,6 +6,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { UserService } from 'src/features/user/user.service';
+import { IPost } from './dto/post-interface';
 
 @Injectable()
 export class PostService {
@@ -14,7 +15,7 @@ export class PostService {
     private userService: UserService,
     @Inject('SUPABASE_CLIENT') private readonly supabaseClient: Client,
   ) {}
-  async create(userId, groupId, newPost) {
+  async create(userId, groupId, newPost): Promise<IPost> {
     this.logger.log('create');
     const { content } = newPost;
 
@@ -29,7 +30,7 @@ export class PostService {
     return result.rows[0];
   }
 
-  async findAll(groupId) {
+  async findAll(groupId: string): Promise<IPost[]> {
     this.logger.log('findAll');
 
     const query = `
@@ -46,7 +47,7 @@ export class PostService {
     return result.rows;
   }
 
-  async findOne(id) {
+  async findOne(id: string): Promise<IPost> {
     this.logger.log('findOne');
     const query = 'SELECT * FROM group_posts WHERE id = $1';
 
@@ -57,13 +58,13 @@ export class PostService {
     return result.rows[0];
   }
 
-  update(id, updatePost) {
-    this.logger.log('update');
-    return `This action updates a #${id} post`;
-  }
+  // update(id, updatePost: any): string {
+  //   this.logger.log('update');
+  //   return `This action updates a #${id} post`;
+  // }
 
-  remove(id) {
-    this.logger.log('remove');
-    return `This action removes a #${id} post`;
-  }
+  // remove(id): string {
+  //   this.logger.log('remove');
+  //   return `This action removes a #${id} post`;
+  // }
 }
