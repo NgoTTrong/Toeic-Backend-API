@@ -42,6 +42,17 @@ export class GroupController {
     };
   }
 
+  @Get('/me')
+  async findAllByMe(@Headers('x-user-id') userId) {
+    this.logger.log('findAllByMe');
+
+    return {
+      statusCode: HttpStatus.OK,
+      data: await this.groupService.findAllByMe(userId),
+      message: `Groups found`,
+    };
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     this.logger.log('findOne');

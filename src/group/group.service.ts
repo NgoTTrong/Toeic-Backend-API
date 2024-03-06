@@ -10,6 +10,7 @@ export class GroupService {
     private userService: UserService,
     @Inject('SUPABASE_CLIENT') private readonly supabaseClient: Client,
   ) {}
+  ME = 'me';
 
   async create(userId, newGroup): Promise<IGroup[]> {
     this.logger.log('create');
@@ -42,6 +43,13 @@ export class GroupService {
     }
 
     return result.rows;
+  }
+
+  async findAllByMe(userId) {
+    this.logger.log('findAllByMe');
+    const allGroup = await this.findAll();
+    const filteredGroups = allGroup.filter((group) => group.user_id === userId);
+    return filteredGroups;
   }
 
   async findOne(id: any) {
