@@ -2,6 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Client } from 'pg';
 import { BadRequestException } from '@nestjs/common';
 import { UserService } from 'src/features/user/user.service';
+import { IGroup } from './dto/group-interface';
 @Injectable()
 export class GroupService {
   private readonly logger = new Logger(GroupService.name);
@@ -10,7 +11,7 @@ export class GroupService {
     @Inject('SUPABASE_CLIENT') private readonly supabaseClient: Client,
   ) {}
 
-  async create(userId, newGroup) {
+  async create(userId, newGroup): Promise<IGroup[]> {
     this.logger.log('create');
     const currentUser = await this.userService.getCurrentUserLogin(userId);
     const { title, image, description } = newGroup;
@@ -29,7 +30,7 @@ export class GroupService {
     return result.rows[0];
   }
 
-  async findAll() {
+  async findAll(): Promise<IGroup[]> {
     this.logger.log('findAll');
     let result;
     try {
