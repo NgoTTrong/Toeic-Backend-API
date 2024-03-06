@@ -70,7 +70,6 @@ export class GroupCommentService {
 
   async findAllByGroupId(groupId): Promise<IComment[]> {
     this.logger.log('findAllByGroupId', groupId);
-    // const query = 'SELECT * FROM group_comments';
     const query = `
     SELECT gc.id AS comment_id, gc.created_at, gc.level, gc.message, gc.post_id, gc.group_id, u.name AS user_name
     FROM group_comments AS gc
