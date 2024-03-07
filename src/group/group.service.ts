@@ -45,11 +45,55 @@ export class GroupService {
     return result.rows;
   }
 
+  async joinGroup(groupId, member_id) {
+    this.logger.log('joinGroup');
+    const group = await this.findOne(groupId);
+    group.member_ids.push(member_id);
+    const query = `
+    UPDATE groups
+    SET member_ids = $1
+    WHERE id = $2
+    RETURNING *
+  `;
+    const result = await this.supabaseClient.query(query, [
+      group.member_ids,
+      groupId,
+    ]);
+    return result.rows[0];
+  }
+
+  async outGroup(groupId, member_id) {
+    this.logger.log('outGroup');
+    const group = await this.findOne(groupId);
+    group.member_ids = group.member_ids.filter((id) => id !== member_id);
+    const query = `
+    UPDATE groups
+    SET member_ids = $1
+    WHERE id = $2
+    RETURNING *
+  `;
+    const result = await this.supabaseClient.query(query, [
+      group.member_ids,
+      groupId,
+    ]);
+    return result.rows[0];
+  }
+
   async findAllByMe(userId) {
     this.logger.log('findAllByMe');
     const allGroup = await this.findAll();
     const filteredGroups = allGroup.filter((group) => group.user_id === userId);
     return filteredGroups;
+  }
+
+  async searchByTerm(searchTerm) {
+    this.logger.log('searchByTerm');
+    let result;
+    try {
+      const query = `SELECT * FROM groups WHERE title LIKE '%${searchTerm}%'`;
+      result = await this.supabaseClient.query(query);
+    } catch (error) {}
+    return result.rows;
   }
 
   async findOne(id: any) {
