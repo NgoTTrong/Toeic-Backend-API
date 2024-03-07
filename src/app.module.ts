@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
@@ -7,8 +7,13 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { environments } from './environments';
 import { join } from 'path';
+import { GroupCommentModule } from './group-comment/group-comment.module';
+import { PostModule } from './post/post.module';
+import { GroupModule } from './group/group.module';
+import supabaseClientProvider from './supabase/supabase.provider';
 
 import { FeaturesModule } from './features/features.module';
+import { ChatbotModule } from './features/chatbot/chatbot.module';
 @Module({
   imports: [
     PrismaModule,
@@ -27,8 +32,12 @@ import { FeaturesModule } from './features/features.module';
       },
     }),
     FeaturesModule,
+    ChatbotModule,
+    GroupCommentModule,
+    PostModule,
+    GroupModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, supabaseClientProvider],
 })
 export class AppModule {}
