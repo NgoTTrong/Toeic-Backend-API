@@ -155,7 +155,7 @@ model Exam {
   numOfParts   Int?
   title        String
   creatorId    String?
-  isPublished Boolean @default(false)
+  isPublished  Boolean       @default(false)
   creator      User?         @relation(fields: [creatorId], references: [id])
   comments     CommentExam[]
   category     ExamCategory? @relation(fields: [categoryId], references: [id])
@@ -225,6 +225,7 @@ model Part1 {
   introduction   String?
   numOfQuestions Int?
   title          String?
+  audioUrl       String
   exams          Exam[]
   creator        User?           @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   part1Questions Part1Question[]
@@ -234,7 +235,6 @@ model Part1 {
 
 model Part1Question {
   id         String   @id @default(uuid())
-  audioUrl   String
   imageUrls  String[]
   questionId String
   part1Id    String
@@ -253,6 +253,7 @@ model Part2 {
   duration       Int?
   introduction   String?
   numOfQuestions Int?
+  audioUrl       String
   title          String?
   exams          Exam[]
   creator        User?           @relation(fields: [creatorId], references: [id])
@@ -264,7 +265,6 @@ model Part2 {
 model Part2Question {
   id         String   @id @default(uuid())
   createdAt  DateTime @default(now())
-  audioUrl   String
   questionId String
   part2Id    String
   position   Int?
@@ -357,16 +357,16 @@ model MappingPart4Question {
 }
 
 model Part5 {
-  id             String          @id @default(uuid())
-  createdAt      DateTime        @default(now())
-  thumbnail      String?
-  duration       Int?
-  introduction   String?
-  numOfQuestions Int?
-  title          String?
-  creatorId      String?
-  exams          Exam[]
-  creator        User?           @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  id                String          @id @default(uuid())
+  createdAt         DateTime        @default(now())
+  thumbnail         String?
+  duration          Int?
+  introduction      String?
+  numOfQuestions    Int?
+  title             String?
+  creatorId         String?
+  exams             Exam[]
+  creator           User?           @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   part5Quegitstions Part5Question[]
 
   @@index([id])

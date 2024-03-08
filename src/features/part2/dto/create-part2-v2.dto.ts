@@ -8,6 +8,7 @@ export class CreatePart2V2Dto {
   @IsOptional()
   thumbnail: string;
 
+
   @IsString()
   @IsOptional()
   introduction: string;

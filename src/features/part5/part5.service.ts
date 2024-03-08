@@ -33,7 +33,7 @@ export class Part5Service {
     return this.prismaService.part5.findFirst({
       where: { id, creatorId: userId },
       include: {
-        part5Questions: {
+        part5Quegitstions: {
           include: {
             question: true,
           },
