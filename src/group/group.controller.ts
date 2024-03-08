@@ -9,6 +9,7 @@ import {
   Logger,
   Headers,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { GroupService } from './group.service';
 import { CreateGroupDto } from './dto/create-group.dto';
@@ -53,6 +54,17 @@ export class GroupController {
     };
   }
 
+  @Get('/search')
+  async search(@Query('key') searchTerm: string): Promise<any> {
+    this.logger.log('search');
+
+    return {
+      statusCode: HttpStatus.OK,
+      data: await this.groupService.searchByTerm(searchTerm),
+      message: `Groups found`,
+    };
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     this.logger.log('findOne');
@@ -60,6 +72,32 @@ export class GroupController {
       statusCode: HttpStatus.OK,
       data: await this.groupService.findOne(id),
       message: `Group found with id ${id}`,
+    };
+  }
+
+  @Patch(':id/join')
+  async joinGroup(
+    @Param('id') id: string,
+    @Body() body: { member_id: string },
+  ): Promise<any> {
+    this.logger.log('joinGroup');
+    return {
+      statusCode: HttpStatus.OK,
+      data: await this.groupService.joinGroup(id, body.member_id),
+      message: `Updated successfully with id ${id}`,
+    };
+  }
+
+  @Patch(':id/out')
+  async outGroup(
+    @Param('id') id: string,
+    @Body() body: { member_id: string },
+  ): Promise<any> {
+    this.logger.log('joinGroup');
+    return {
+      statusCode: HttpStatus.OK,
+      data: await this.groupService.outGroup(id, body.member_id),
+      message: `Updated successfully with id ${id}`,
     };
   }
 
