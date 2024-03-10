@@ -11,5 +11,9 @@ export class CreatePart2V2Dto {
 
   @IsString()
   @IsOptional()
+  audioUrl: string;
+
+  @IsString()
+  @IsOptional()
   introduction: string;
 }

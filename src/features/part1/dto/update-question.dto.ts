@@ -17,5 +17,9 @@ export class UpdateQuestionDto {
 
   @IsString()
   @IsOptional()
+  audioUrl: string;
+
+  @IsString()
+  @IsOptional()
   imageUrl: string;
 }

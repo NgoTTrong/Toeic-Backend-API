@@ -36,6 +36,7 @@ model User {
   Part6            Part6[]
   Part7            Part7[]
   Exam             Exam[]
+  FlashCard        FlashCard[]
 
   @@index([id, email])
 }
@@ -225,7 +226,7 @@ model Part1 {
   introduction   String?
   numOfQuestions Int?
   title          String?
-  audioUrl       String
+  audioUrl       String?
   exams          Exam[]
   creator        User?           @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   part1Questions Part1Question[]
@@ -236,6 +237,7 @@ model Part1 {
 model Part1Question {
   id         String   @id @default(uuid())
   imageUrls  String[]
+  audioUrl   String?
   questionId String
   part1Id    String
   position   Int?
@@ -253,7 +255,7 @@ model Part2 {
   duration       Int?
   introduction   String?
   numOfQuestions Int?
-  audioUrl       String
+  audioUrl       String?
   title          String?
   exams          Exam[]
   creator        User?           @relation(fields: [creatorId], references: [id])
@@ -266,6 +268,7 @@ model Part2Question {
   id         String   @id @default(uuid())
   createdAt  DateTime @default(now())
   questionId String
+  audioUrl   String?
   part2Id    String
   position   Int?
   part2      Part2    @relation(fields: [part2Id], references: [id])
@@ -583,4 +586,26 @@ enum Answer {
 enum Active {
   ACTIVE
   INACTIVE
+}
+
+model Word {
+  id          String     @id @default(uuid())
+  term        String
+  define      String
+  FlashCard   FlashCard? @relation(fields: [flashCardId], references: [id])
+  flashCardId String?
+
+  @@index([id])
+}
+
+model FlashCard {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  creatorId   String?
+  title       String
+  description String?
+  creator     User?    @relation(fields: [creatorId], references: [id])
+  words       Word[]
+
+  @@index([id])
 }

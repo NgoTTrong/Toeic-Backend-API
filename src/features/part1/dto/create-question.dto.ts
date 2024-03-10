@@ -13,6 +13,10 @@ export class CreateQuestionDto {
     explain: string;
   };
 
+
+  @IsString()
+  audioUrl: string;
+
   @IsString()
   imageUrl: string;
 }

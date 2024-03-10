@@ -93,7 +93,7 @@ export class Part2Service {
     const _part2Question = await this.prismaService.part2Question.update({
       where: { id: part2QuestionId },
       data: {
-        // audioUrl: dto.audioUrl ?? undefined,
+        audioUrl: dto.audioUrl ?? undefined,
       },
     });
 
@@ -152,7 +152,7 @@ export class Part2Service {
     });
     const _part2Question = await this.prismaService.part2Question.create({
       data: {
-        // audioUrl: dto.audioUrl,
+        audioUrl: dto.audioUrl,
         questionId: _question.id,
         part2Id,
         position: lastQuestion ? lastQuestion?.position + 1 : 1,

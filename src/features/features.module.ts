@@ -19,6 +19,8 @@ import { TopicModule } from './topic/topic.module';
 import { PaymentModule } from './payment/payment.module';
 import { CommentModule } from './comment/comment.module';
 import { ExamCategoryModule } from './exam-category/exam-category.module';
+import { FlashCardModule } from './flashcard/flashcard.module';
+
 
 @Module({
   imports: [
@@ -42,6 +44,7 @@ import { ExamCategoryModule } from './exam-category/exam-category.module';
     FeedCategoryModule,
     CommentModule,
     ExamCategoryModule,
+    FlashCardModule
   ],
   controllers: [],
   providers: [],
