@@ -72,8 +72,22 @@ export class ExamService {
       },
     });
   }
-
   findOne(id: string) {
+    return this.prismaService.exam.findFirst({
+      where: {
+        id,
+      },
+      select: {
+        title: true,
+        id: true,
+        isPublished: true,
+        introduction: true,
+        categoryId: true,
+        thumbnail: true,
+      },
+    });
+  }
+  findOneDetail(id: string) {
     return this.prismaService.exam.findFirst({
       where: {
         id,
@@ -89,42 +103,156 @@ export class ExamService {
           select: {
             title: true,
             id: true,
+            part1Questions: {
+              include: {
+                question: {
+                  select: {
+                    id: true,
+                    optionA: true,
+                    optionB: true,
+                    optionC: true,
+                    optionD: true,
+                    content: true,
+                  },
+                },
+              },
+            },
           },
         },
         part2: {
           select: {
             title: true,
             id: true,
+            part2Questions: {
+              include: {
+                question: {
+                  select: {
+                    id: true,
+                    optionA: true,
+                    optionB: true,
+                    optionC: true,
+                    optionD: true,
+                    content: true,
+                  },
+                },
+              },
+            },
           },
         },
         part3: {
           select: {
             title: true,
             id: true,
+            part3Questions: {
+              include: {
+                groupPart3Questions: {
+                  include: {
+                    question: {
+                      select: {
+                        id: true,
+                        optionA: true,
+                        optionB: true,
+                        optionC: true,
+                        optionD: true,
+                        content: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
         },
         part4: {
           select: {
             title: true,
             id: true,
+            part4Questions: {
+              include: {
+                groupPart4Questions: {
+                  include: {
+                    question: {
+                      select: {
+                        id: true,
+                        optionA: true,
+                        optionB: true,
+                        optionC: true,
+                        optionD: true,
+                        content: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
         },
         part5: {
           select: {
             title: true,
             id: true,
+            part5Questions: {
+              include: {
+                question: {
+                  select: {
+                    id: true,
+                    optionA: true,
+                    optionB: true,
+                    optionC: true,
+                    optionD: true,
+                    content: true,
+                  },
+                },
+              },
+            },
           },
         },
         part6: {
           select: {
             title: true,
             id: true,
+            part6Questions: {
+              include: {
+                groupPart6Questions: {
+                  include: {
+                    question: {
+                      select: {
+                        id: true,
+                        optionA: true,
+                        optionB: true,
+                        optionC: true,
+                        optionD: true,
+                        content: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
         },
         part7: {
           select: {
             title: true,
             id: true,
+            part7Questions: {
+              include: {
+                groupPart7Questions: {
+                  include: {
+                    question: {
+                      select: {
+                        id: true,
+                        optionA: true,
+                        optionB: true,
+                        optionC: true,
+                        optionD: true,
+                        content: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
         },
       },

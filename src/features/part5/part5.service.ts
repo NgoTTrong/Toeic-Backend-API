@@ -17,7 +17,7 @@ export class Part5Service {
       },
     });
   }
-  
+
   async findAll(userId: string) {
     return this.prismaService.part5.findMany({
       where: {
@@ -33,7 +33,7 @@ export class Part5Service {
     return this.prismaService.part5.findFirst({
       where: { id, creatorId: userId },
       include: {
-        part5Quegitstions: {
+        part5Questions: {
           include: {
             question: true,
           },

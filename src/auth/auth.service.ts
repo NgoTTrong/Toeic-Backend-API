@@ -24,8 +24,7 @@ export class AuthService {
       if (_user.active == 'INACTIVE')
         throw new BadRequestException('Your account is inactive');
 
-      return _user
-   
+      return _user;
     } else {
       const data = await clerk.users.getUser(userId);
       const newUser = await this.prismaService.user.create({
@@ -38,7 +37,7 @@ export class AuthService {
         },
       });
 
-      return newUser
+      return newUser;
     }
   }
   // FIXME: change to use clerk authentication

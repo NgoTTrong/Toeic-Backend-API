@@ -32,7 +32,11 @@ export class ExamController {
   findOne(@Param('id') id: string) {
     return this.examService.findOne(id);
   }
-
+  @Get('detail/:id')
+  @Public()
+  findOneDetail(@Param('id') id: string) {
+    return this.examService.findOneDetail(id);
+  }
   @Patch(':id')
   @Public()
   update(@Param('id') id: string, @Body() updateExamDto: UpdateExamDto) {

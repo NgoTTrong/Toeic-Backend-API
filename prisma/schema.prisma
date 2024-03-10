@@ -370,7 +370,7 @@ model Part5 {
   creatorId         String?
   exams             Exam[]
   creator           User?           @relation(fields: [creatorId], references: [id], onDelete: Cascade)
-  part5Quegitstions Part5Question[]
+  part5Questions Part5Question[]
 
   @@index([id])
 }
