@@ -72,6 +72,9 @@ export class ExamService {
       },
     });
   }
+  findAllByUser() {
+    return this.prismaService.exam.findMany();
+  }
   findOne(id: string) {
     return this.prismaService.exam.findFirst({
       where: {

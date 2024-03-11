@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ExamService } from './exam.service';
 import { CreateExamDto } from './dto/create-exam.dto';
@@ -21,7 +22,11 @@ export class ExamController {
   create(@Body() createExamDto: CreateExamDto, @GetUser() user: Payload) {
     return this.examService.create(createExamDto, user.id);
   }
-
+  @Get('/get-all-of-user')
+  @Public()
+  findAllByUser(@Query('userId') userId: string) {
+    return this.examService.findAllByUser();
+  }
   @Get()
   findAll(@GetUser() user: Payload) {
     return this.examService.findAll(user?.id);
