@@ -45,35 +45,118 @@ export class GroupService {
     return result.rows;
   }
 
-  async joinGroup(groupId, member_id) {
+  async joinGroup(groupId, member_id, password) {
     this.logger.log('joinGroup');
     const group = await this.findOne(groupId);
-    group.member_ids.push(member_id);
+    if (!group?.candidates_waiting) {
+      group.candidates_waiting = [];
+      group.candidates_waiting_name = [];
+    }
+    if (!member_id) {
+      throw new BadRequestException('User not found');
+    }
+
+    const user = await this.userService.getCurrentUserLogin(member_id);
+
+    group?.candidates_waiting.push(member_id);
+    group?.candidates_waiting_name.push(user.name);
+    // group.member_ids.push(member_id);
     const query = `
-    UPDATE groups
-    SET member_ids = $1
-    WHERE id = $2
+    UPDATE groups 
+    SET candidates_waiting = $1, candidates_waiting_name = $2
+    WHERE id = $3 AND password = $4
     RETURNING *
   `;
     const result = await this.supabaseClient.query(query, [
-      group.member_ids,
+      group?.candidates_waiting,
+      group?.candidates_waiting_name,
+      groupId,
+      password,
+    ]);
+    if (result.rows.length === 0) {
+      //group is always exist -> throw wrong password
+      throw new BadRequestException('Wrong password');
+    }
+    return result.rows[0];
+  }
+
+  async approve(groupId, candidate_waiting) {
+    this.logger.log('approve');
+    const group = await this.findOne(groupId);
+    const user = await this.userService.getCurrentUserLogin(candidate_waiting);
+    const index = group?.candidates_waiting.indexOf(candidate_waiting);
+
+    if (index !== -1) {
+      group.candidates_waiting.splice(index, 1);
+      group.candidates_waiting_name.splice(index, 1);
+    }
+    group?.member_ids.push(candidate_waiting);
+    group.members.push(user.name);
+
+    const query = `
+    UPDATE groups 
+    SET member_ids = $1, candidates_waiting = $2,members = $3, candidates_waiting_name = $4
+    WHERE id = $5
+    RETURNING *
+  `;
+    const result = await this.supabaseClient.query(query, [
+      group?.member_ids,
+      group?.candidates_waiting,
+      group?.members,
+      group?.candidates_waiting_name,
       groupId,
     ]);
+    if (result.rows.length === 0) {
+      throw new BadRequestException('Approve failed!');
+    }
+    return result.rows[0];
+  }
+
+  async reject(groupId, candidate_waiting) {
+    this.logger.log('approve');
+    const group = await this.findOne(groupId);
+    const index = group?.candidates_waiting.indexOf(candidate_waiting);
+
+    if (index !== -1) {
+      group.candidates_waiting.splice(index, 1);
+      group.candidates_waiting_name.splice(index, 1);
+    }
+
+    const query = `
+    UPDATE groups 
+    SET  candidates_waiting = $1, candidates_waiting_name = $2
+    WHERE id = $3
+    RETURNING *
+  `;
+    const result = await this.supabaseClient.query(query, [
+      group?.candidates_waiting,
+      group?.candidates_waiting_name,
+      groupId,
+    ]);
+    if (result.rows.length === 0) {
+      throw new BadRequestException('Reject failed!');
+    }
     return result.rows[0];
   }
 
   async outGroup(groupId, member_id) {
     this.logger.log('outGroup');
     const group = await this.findOne(groupId);
-    group.member_ids = group.member_ids.filter((id) => id !== member_id);
+    const index = group.member_ids.indexOf(member_id);
+
+    if (index !== -1) {
+      group.member_ids.splice(index, 1);
+      group.members.splice(index, 1);
+    }
     const query = `
     UPDATE groups
-    SET member_ids = $1
-    WHERE id = $2
+    SET member_ids = $1, members = $2
+    WHERE id = $3
     RETURNING *
   `;
     const result = await this.supabaseClient.query(query, [
       group.member_ids,
+      group.members,
       groupId,
     ]);
     return result.rows[0];

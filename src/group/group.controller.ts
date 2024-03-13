@@ -77,14 +77,40 @@ export class GroupController {
 
   @Patch(':id/join')
   async joinGroup(
+    @Headers('x-group-password') password,
     @Param('id') id: string,
     @Body() body: { member_id: string },
   ): Promise<any> {
     this.logger.log('joinGroup');
     return {
       statusCode: HttpStatus.OK,
-      data: await this.groupService.joinGroup(id, body.member_id),
+      data: await this.groupService.joinGroup(id, body.member_id, password),
       message: `Updated successfully with id ${id}`,
+    };
+  }
+  @Patch(':id/approve')
+  async approve(
+    @Param('id') id: string,
+    @Body() body: { candidate_waiting },
+  ): Promise<any> {
+    this.logger.log('approve');
+    return {
+      statusCode: HttpStatus.OK,
+      data: await this.groupService.approve(id, body.candidate_waiting),
+      message: `Approved successfully with id ${id}`,
+    };
+  }
+
+  @Patch(':id/reject')
+  async reject(
+    @Param('id') id: string,
+    @Body() body: { candidate_waiting },
+  ): Promise<any> {
+    this.logger.log('reject');
+    return {
+      statusCode: HttpStatus.OK,
+      data: await this.groupService.reject(id, body.candidate_waiting),
+      message: `Rejected successfully with id ${id}`,
     };
   }
 
@@ -93,7 +119,7 @@ export class GroupController {
     @Param('id') id: string,
     @Body() body: { member_id: string },
   ): Promise<any> {
-    this.logger.log('joinGroup');
+    this.logger.log('outGroup');
     return {
       statusCode: HttpStatus.OK,
       data: await this.groupService.outGroup(id, body.member_id),
