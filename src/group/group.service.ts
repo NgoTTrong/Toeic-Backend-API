@@ -15,11 +15,12 @@ export class GroupService {
   async create(userId, newGroup): Promise<IGroup[]> {
     this.logger.log('create');
     const currentUser = await this.userService.getCurrentUserLogin(userId);
-    const { title, image, description } = newGroup;
+    const { title, image, description, password } = newGroup;
     const members = [currentUser.name];
     const createdBy = currentUser.name;
+    const member_ids = [userId];
     const query =
-      'INSERT INTO groups(title, image, created_by, members, description,user_id) VALUES($1, $2, $3, $4, $5, $6) RETURNING *';
+      'INSERT INTO groups(title, image, created_by, members, description,user_id,member_ids,password) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *';
     const result = await this.supabaseClient.query(query, [
       title,
       image,
@@ -27,7 +28,12 @@ export class GroupService {
       members,
       description,
       userId,
+      member_ids,
+      password,
     ]);
+    if (result.rows.length === 0) {
+      throw new BadRequestException('Cannot create group');
+    }
     return result.rows[0];
   }
 
