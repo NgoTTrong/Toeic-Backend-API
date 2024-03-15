@@ -10,6 +10,7 @@ import {
   Headers,
   HttpStatus,
   Query,
+  BadRequestException,
 } from '@nestjs/common';
 import { GroupService } from './group.service';
 import { CreateGroupDto } from './dto/create-group.dto';
@@ -26,6 +27,9 @@ export class GroupController {
     @Body() createGroupDto: CreateGroupDto,
   ) {
     this.logger.log('create');
+    if (!userId || userId === 'undefined') {
+      throw new BadRequestException('userId not found');
+    }
     return {
       statusCode: HttpStatus.OK,
       data: this.groupService.create(userId, createGroupDto),
