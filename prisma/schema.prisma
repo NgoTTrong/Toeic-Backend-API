@@ -20,23 +20,23 @@ model User {
   address          String?
   commentExams     CommentExam[]
   commentFeeds     CommentFeed[]
+  Exam             Exam[]
   Feed             Feed[]
+  FlashCard        FlashCard[]
   likeCommentExams LikeCommentExam[]
   likeCommentFeeds LikeCommentFeed[]
   likeExams        LikeExam[]
   likeFeeds        LikeFeed[]
   notifications    NotificationUser[]
   Part1            Part1[]
-  Payment          Payment[]
-  rank             Rank?              @relation(fields: [rankId], references: [id])
   Part2            Part2[]
   Part3            Part3[]
   Part4            Part4[]
   Part5            Part5[]
   Part6            Part6[]
   Part7            Part7[]
-  Exam             Exam[]
-  FlashCard        FlashCard[]
+  Payment          Payment[]
+  rank             Rank?              @relation(fields: [rankId], references: [id])
 
   @@index([id, email])
 }
@@ -157,9 +157,9 @@ model Exam {
   title        String
   creatorId    String?
   isPublished  Boolean       @default(false)
-  creator      User?         @relation(fields: [creatorId], references: [id])
   comments     CommentExam[]
   category     ExamCategory? @relation(fields: [categoryId], references: [id])
+  creator      User?         @relation(fields: [creatorId], references: [id])
   part1        Part1?        @relation(fields: [part1Id], references: [id])
   part2        Part2?        @relation(fields: [part2Id], references: [id])
   part3        Part3?        @relation(fields: [part3Id], references: [id])
@@ -219,13 +219,13 @@ model LikeCommentExam {
 
 model Part1 {
   id             String          @id @default(uuid())
-  createdAt      DateTime        @default(now())
   thumbnail      String?
   creatorId      String?
   duration       Int?
   introduction   String?
   numOfQuestions Int?
   title          String?
+  createdAt      DateTime        @default(now())
   audioUrl       String?
   exams          Exam[]
   creator        User?           @relation(fields: [creatorId], references: [id], onDelete: Cascade)
@@ -236,8 +236,8 @@ model Part1 {
 
 model Part1Question {
   id         String   @id @default(uuid())
-  imageUrls  String[]
   audioUrl   String?
+  imageUrls  String[]
   questionId String
   part1Id    String
   position   Int?
@@ -251,12 +251,12 @@ model Part2 {
   id             String          @id @default(uuid())
   createdAt      DateTime        @default(now())
   thumbnail      String?
-  creatorId      String?
   duration       Int?
   introduction   String?
   numOfQuestions Int?
-  audioUrl       String?
+  creatorId      String?
   title          String?
+  audioUrl       String?
   exams          Exam[]
   creator        User?           @relation(fields: [creatorId], references: [id])
   part2Questions Part2Question[]
@@ -267,8 +267,8 @@ model Part2 {
 model Part2Question {
   id         String   @id @default(uuid())
   createdAt  DateTime @default(now())
-  questionId String
   audioUrl   String?
+  questionId String
   part2Id    String
   position   Int?
   part2      Part2    @relation(fields: [part2Id], references: [id])
@@ -284,8 +284,8 @@ model Part3 {
   duration       Int?
   introduction   String?
   numOfQuestions Int?
-  title          String?
   creatorId      String?
+  title          String?
   exams          Exam[]
   creator        User?           @relation(fields: [creatorId], references: [id])
   part3Questions Part3Question[]
@@ -325,8 +325,8 @@ model Part4 {
   duration       Int?
   introduction   String?
   numOfQuestions Int?
-  title          String?
   creatorId      String?
+  title          String?
   exams          Exam[]
   creator        User?           @relation(fields: [creatorId], references: [id])
   part4Questions Part4Question[]
@@ -350,9 +350,9 @@ model Part4Question {
 model MappingPart4Question {
   part4QuestionId String
   questionId      String
+  position        Int?
   part4Question   Part4Question @relation(fields: [part4QuestionId], references: [id])
   question        Question      @relation(fields: [questionId], references: [id])
-  position        Int?
 
   @@id([questionId, part4QuestionId])
   @@unique([part4QuestionId, questionId])
@@ -360,16 +360,16 @@ model MappingPart4Question {
 }
 
 model Part5 {
-  id                String          @id @default(uuid())
-  createdAt         DateTime        @default(now())
-  thumbnail         String?
-  duration          Int?
-  introduction      String?
-  numOfQuestions    Int?
-  title             String?
-  creatorId         String?
-  exams             Exam[]
-  creator           User?           @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  id             String          @id @default(uuid())
+  createdAt      DateTime        @default(now())
+  thumbnail      String?
+  duration       Int?
+  introduction   String?
+  numOfQuestions Int?
+  creatorId      String?
+  title          String?
+  exams          Exam[]
+  creator        User?           @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   part5Questions Part5Question[]
 
   @@index([id])
@@ -394,8 +394,8 @@ model Part6 {
   duration       Int?
   introduction   String?
   numOfQuestions Int?
-  title          String?
   creatorId      String?
+  title          String?
   exams          Exam[]
   creator        User?           @relation(fields: [creatorId], references: [id])
   part6Questions Part6Question[]
@@ -434,8 +434,8 @@ model Part7 {
   duration       Int?
   introduction   String?
   numOfQuestions Int?
-  title          String?
   creatorId      String?
+  title          String?
   exams          Exam[]
   creator        User?           @relation(fields: [creatorId], references: [id])
   part7Questions Part7Question[]
@@ -475,10 +475,9 @@ model Question {
   optionB        String?
   optionC        String?
   optionD        String?
-  topicId        String?
-  topic          Topic?                 @relation(fields: [topicId], references: [id])
-  explain        String?
   answer         Answer?
+  explain        String?
+  topicId        String?
   part3Questions MappingPart3Question[]
   part4Questions MappingPart4Question[]
   part6Questions MappingPart6Question[]
@@ -486,6 +485,7 @@ model Question {
   part1Questions Part1Question[]
   part2Questions Part2Question[]
   part5Questions Part5Question[]
+  topic          Topic?                 @relation(fields: [topicId], references: [id])
 
   @@index([id])
 }
@@ -576,24 +576,12 @@ model UserProgress {
   @@index([chapterId])
 }
 
-enum Answer {
-  A
-  B
-  C
-  D
-}
-
-enum Active {
-  ACTIVE
-  INACTIVE
-}
-
 model Word {
   id          String     @id @default(uuid())
   term        String
   define      String
-  FlashCard   FlashCard? @relation(fields: [flashCardId], references: [id])
   flashCardId String?
+  FlashCard   FlashCard? @relation(fields: [flashCardId], references: [id])
 
   @@index([id])
 }
@@ -608,4 +596,16 @@ model FlashCard {
   words       Word[]
 
   @@index([id])
+}
+
+enum Answer {
+  A
+  B
+  C
+  D
+}
+
+enum Active {
+  ACTIVE
+  INACTIVE
 }
