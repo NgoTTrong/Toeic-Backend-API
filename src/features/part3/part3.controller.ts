@@ -62,6 +62,7 @@ export class Part3Controller {
   }
 
   @Delete(':id')
+  @Public()
   remove(@Param('id') id: string) {
     return this.part3Service.remove(id);
   }
