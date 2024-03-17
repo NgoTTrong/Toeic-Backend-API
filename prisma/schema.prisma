@@ -241,8 +241,8 @@ model Part1Question {
   questionId String
   part1Id    String
   position   Int?
-  part1      Part1    @relation(fields: [part1Id], references: [id])
-  question   Question @relation(fields: [questionId], references: [id])
+  part1      Part1    @relation(fields: [part1Id], references: [id], onDelete: Cascade)
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@index([id, part1Id])
 }
@@ -271,8 +271,8 @@ model Part2Question {
   questionId String
   part2Id    String
   position   Int?
-  part2      Part2    @relation(fields: [part2Id], references: [id])
-  question   Question @relation(fields: [questionId], references: [id])
+  part2      Part2    @relation(fields: [part2Id], references: [id], onDelete: Cascade)
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@index([id, part2Id])
 }
@@ -301,7 +301,7 @@ model Part3Question {
   part3Id             String
   position            Int?
   groupPart3Questions MappingPart3Question[]
-  part3               Part3                  @relation(fields: [part3Id], references: [id])
+  part3               Part3                  @relation(fields: [part3Id], references: [id], onDelete: Cascade)
 
   @@index([id, part3Id])
 }
@@ -310,8 +310,8 @@ model MappingPart3Question {
   part3QuestionId String
   questionId      String
   position        Int?
-  part3Question   Part3Question @relation(fields: [part3QuestionId], references: [id])
-  question        Question      @relation(fields: [questionId], references: [id])
+  part3Question   Part3Question @relation(fields: [part3QuestionId], references: [id], onDelete: Cascade)
+  question        Question      @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@id([part3QuestionId, questionId])
   @@unique([part3QuestionId, questionId])
@@ -342,7 +342,7 @@ model Part4Question {
   part4Id             String
   position            Int?
   groupPart4Questions MappingPart4Question[]
-  part4               Part4                  @relation(fields: [part4Id], references: [id])
+  part4               Part4                  @relation(fields: [part4Id], references: [id], onDelete: Cascade)
 
   @@index([id, part4Id])
 }
@@ -351,8 +351,8 @@ model MappingPart4Question {
   part4QuestionId String
   questionId      String
   position        Int?
-  part4Question   Part4Question @relation(fields: [part4QuestionId], references: [id])
-  question        Question      @relation(fields: [questionId], references: [id])
+  part4Question   Part4Question @relation(fields: [part4QuestionId], references: [id], onDelete: Cascade)
+  question        Question      @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@id([questionId, part4QuestionId])
   @@unique([part4QuestionId, questionId])
@@ -381,8 +381,8 @@ model Part5Question {
   part5Id    String
   questionId String
   position   Int?
-  part5      Part5    @relation(fields: [part5Id], references: [id])
-  question   Question @relation(fields: [questionId], references: [id])
+  part5      Part5    @relation(fields: [part5Id], references: [id], onDelete: Cascade)
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@index([part5Id, questionId])
 }
@@ -410,7 +410,7 @@ model Part6Question {
   part6Id             String
   position            Int?
   groupPart6Questions MappingPart6Question[]
-  part6               Part6                  @relation(fields: [part6Id], references: [id])
+  part6               Part6                  @relation(fields: [part6Id], references: [id], onDelete: Cascade)
 
   @@index([id, part6Id])
 }
@@ -419,8 +419,8 @@ model MappingPart6Question {
   part6QuestionId String
   questionId      String
   position        Int?
-  part6Question   Part6Question @relation(fields: [part6QuestionId], references: [id])
-  question        Question      @relation(fields: [questionId], references: [id])
+  part6Question   Part6Question @relation(fields: [part6QuestionId], references: [id], onDelete: Cascade)
+  question        Question      @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@id([part6QuestionId, questionId])
   @@unique([part6QuestionId, questionId])
@@ -450,7 +450,7 @@ model Part7Question {
   part7Id             String
   position            Int?
   groupPart7Questions MappingPart7Question[]
-  part7               Part7                  @relation(fields: [part7Id], references: [id])
+  part7               Part7                  @relation(fields: [part7Id], references: [id], onDelete: Cascade)
 
   @@index([id, part7Id])
 }
@@ -459,8 +459,8 @@ model MappingPart7Question {
   part7QuestionId String
   questionId      String
   position        Int?
-  part7Question   Part7Question @relation(fields: [part7QuestionId], references: [id])
-  question        Question      @relation(fields: [questionId], references: [id])
+  part7Question   Part7Question @relation(fields: [part7QuestionId], references: [id], onDelete: Cascade)
+  question        Question      @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@id([part7QuestionId, questionId])
   @@unique([part7QuestionId, questionId])
