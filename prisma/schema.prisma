@@ -635,6 +635,7 @@ model GroupMember {
   status   GroupMemberStatus @default(JOINED)
   groupId  String
   group    Group             @relation(fields: [groupId], references: [id])
+  isOwner  Boolean           @default(false)
 }
 
 model GroupPost {
@@ -643,26 +644,25 @@ model GroupPost {
   creatorId        String?
   creator          User?              @relation(fields: [creatorId], references: [id])
   content          String?
+  name             String?
   groupId          String
   group            Group              @relation(fields: [groupId], references: [id])
   GroupPostComment GroupPostComment[]
 }
 
 model GroupPostComment {
-  id        String    @default(uuid())
+  id        String    @id @default(uuid())
   createdAt DateTime  @default(now())
   memberId  String?
   member    User?     @relation(fields: [memberId], references: [id])
-  level     Int       @default(1)
   message   String?
   postId    String
   post      GroupPost @relation(fields: [postId], references: [id])
-
-  @@id([id, level, createdAt])
+  numOfReplys Int @default(0)
+  parentId  String?
 }
 
 enum GroupMemberStatus {
   WAITING
   JOINED
-  DENY
 }
