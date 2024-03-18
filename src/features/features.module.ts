@@ -20,7 +20,7 @@ import { PaymentModule } from './payment/payment.module';
 import { CommentModule } from './comment/comment.module';
 import { ExamCategoryModule } from './exam-category/exam-category.module';
 import { FlashCardModule } from './flashcard/flashcard.module';
-
+import { GroupModule } from './group/group.module';
 
 @Module({
   imports: [
@@ -44,7 +44,8 @@ import { FlashCardModule } from './flashcard/flashcard.module';
     FeedCategoryModule,
     CommentModule,
     ExamCategoryModule,
-    FlashCardModule
+    FlashCardModule,
+    GroupModule,
   ],
   controllers: [],
   providers: [],

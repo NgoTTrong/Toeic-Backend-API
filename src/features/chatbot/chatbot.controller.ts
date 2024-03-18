@@ -14,16 +14,18 @@ import { ChatbotService } from './chatbot.service';
 import { CreateChatbotDto } from './dto/create-chatbot.dto';
 import { UpdateChatbotDto } from './dto/update-chatbot.dto';
 import { promisify } from 'util';
+import { SendMessageDto } from './dto/send-message..dto';
+import { Public } from 'src/core/decorators';
 
-@Controller('chatbot')
+@Controller('chat-bot')
 export class ChatbotController {
   constructor(private readonly chatbotService: ChatbotService) {}
 
-
   @Post()
-  async sendQuestion(@Body() body: any) {
-    const response =  await this.chatbotService.generateText(body.text);
-    return { data: response, status: 200 };
+  @Public()
+  async sendQuestion(@Body() body: SendMessageDto) {
+    const response = await this.chatbotService.generateText(body?.message);
+    return response;
   }
 
   @Get(':id')

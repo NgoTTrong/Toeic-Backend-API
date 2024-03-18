@@ -37,6 +37,10 @@ model User {
   Part7            Part7[]
   Exam             Exam[]
   FlashCard        FlashCard[]
+  Group            Group[]
+  GroupMember      GroupMember[]
+  GroupPost        GroupPost[]
+  GroupPostComment GroupPostComment[]
 
   @@index([id, email])
 }
@@ -360,16 +364,16 @@ model MappingPart4Question {
 }
 
 model Part5 {
-  id                String          @id @default(uuid())
-  createdAt         DateTime        @default(now())
-  thumbnail         String?
-  duration          Int?
-  introduction      String?
-  numOfQuestions    Int?
-  title             String?
-  creatorId         String?
-  exams             Exam[]
-  creator           User?           @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  id             String          @id @default(uuid())
+  createdAt      DateTime        @default(now())
+  thumbnail      String?
+  duration       Int?
+  introduction   String?
+  numOfQuestions Int?
+  title          String?
+  creatorId      String?
+  exams          Exam[]
+  creator        User?           @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   part5Questions Part5Question[]
 
   @@index([id])
@@ -608,4 +612,57 @@ model FlashCard {
   words       Word[]
 
   @@index([id])
+}
+
+model Group {
+  id          String        @id @default(uuid())
+  createdAt   DateTime      @default(now())
+  creatorId   String?
+  creator     User?         @relation(fields: [creatorId], references: [id])
+  image       String?
+  title       String?
+  description String?
+  password    String?
+  isPublic    Boolean       @default(true)
+  GroupPost   GroupPost[]
+  GroupMember GroupMember[]
+}
+
+model GroupMember {
+  id       String            @id @default(uuid())
+  memberId String?
+  member   User?             @relation(fields: [memberId], references: [id])
+  status   GroupMemberStatus @default(JOINED)
+  groupId  String
+  group    Group             @relation(fields: [groupId], references: [id])
+}
+
+model GroupPost {
+  id               String             @id @default(uuid())
+  createdAt        DateTime           @default(now())
+  creatorId        String?
+  creator          User?              @relation(fields: [creatorId], references: [id])
+  content          String?
+  groupId          String
+  group            Group              @relation(fields: [groupId], references: [id])
+  GroupPostComment GroupPostComment[]
+}
+
+model GroupPostComment {
+  id        String    @default(uuid())
+  createdAt DateTime  @default(now())
+  memberId  String?
+  member    User?     @relation(fields: [memberId], references: [id])
+  level     Int       @default(1)
+  message   String?
+  postId    String
+  post      GroupPost @relation(fields: [postId], references: [id])
+
+  @@id([id, level, createdAt])
+}
+
+enum GroupMemberStatus {
+  WAITING
+  JOINED
+  DENY
 }

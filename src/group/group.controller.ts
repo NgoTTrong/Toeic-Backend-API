@@ -14,6 +14,7 @@ import {
 import { GroupService } from './group.service';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
+import { Public } from 'src/core/decorators';
 
 @Controller('group')
 export class GroupController {
@@ -21,6 +22,7 @@ export class GroupController {
   constructor(private readonly groupService: GroupService) {}
 
   @Post()
+  @Public()
   create(
     @Headers('x-user-id') userId: string,
     @Body() createGroupDto: CreateGroupDto,
@@ -34,6 +36,7 @@ export class GroupController {
   }
 
   @Get()
+  @Public()
   async findAll() {
     this.logger.log('findAll');
     return {
@@ -44,6 +47,7 @@ export class GroupController {
   }
 
   @Get('/me')
+  @Public()
   async findAllByMe(@Headers('x-user-id') userId) {
     this.logger.log('findAllByMe');
 
@@ -55,6 +59,7 @@ export class GroupController {
   }
 
   @Get('/search')
+  @Public()
   async search(@Query('key') searchTerm: string): Promise<any> {
     this.logger.log('search');
 
@@ -66,6 +71,7 @@ export class GroupController {
   }
 
   @Get(':id')
+  @Public()
   async findOne(@Param('id') id: string) {
     this.logger.log('findOne');
     return {
@@ -76,6 +82,7 @@ export class GroupController {
   }
 
   @Patch(':id/join')
+  @Public()
   async joinGroup(
     @Headers('x-group-password') password,
     @Param('id') id: string,
@@ -89,6 +96,7 @@ export class GroupController {
     };
   }
   @Patch(':id/approve')
+  @Public()
   async approve(
     @Param('id') id: string,
     @Body() body: { candidate_waiting },
@@ -102,6 +110,7 @@ export class GroupController {
   }
 
   @Patch(':id/reject')
+  @Public()
   async reject(
     @Param('id') id: string,
     @Body() body: { candidate_waiting },
@@ -115,6 +124,7 @@ export class GroupController {
   }
 
   @Patch(':id/out')
+  @Public()
   async outGroup(
     @Param('id') id: string,
     @Body() body: { member_id: string },
@@ -128,6 +138,7 @@ export class GroupController {
   }
 
   @Patch(':id')
+  @Public()
   async update(
     @Param('id') id: string,
     @Body() updateGroupDto: UpdateGroupDto,
@@ -141,6 +152,7 @@ export class GroupController {
   }
 
   @Delete(':id')
+  @Public()
   async remove(@Param('id') id: string) {
     this.logger.log('remove');
     return {

@@ -11,12 +11,14 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { GroupCommentService } from './group-comment.service';
+import { Public } from 'src/core/decorators';
 @Controller('group-comments')
 export class GroupCommentController {
   private readonly logger = new Logger(GroupCommentController.name);
   constructor(private readonly commentService: GroupCommentService) {}
 
   @Post()
+  @Public()
   async create(
     @Headers('x-user-id') userId,
     @Headers('x-post-id') postId,
@@ -32,6 +34,7 @@ export class GroupCommentController {
   }
 
   @Get()
+  @Public()
   async findAll(@Headers('x-group-id') groupId) {
     this.logger.log('findAll');
 

@@ -11,6 +11,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { PostService } from './post.service';
+import { Public } from 'src/core/decorators';
 
 @Controller('post')
 export class PostController {
@@ -18,6 +19,7 @@ export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Post()
+  @Public()
   create(
     @Headers('x-user-id') userId: string,
     @Headers('x-post-id') postId: string,
@@ -31,6 +33,7 @@ export class PostController {
   }
 
   @Get()
+  @Public()
   async findAll(@Headers('x-group-id') groupId) {
     this.logger.log('findAll');
     return {
@@ -41,6 +44,7 @@ export class PostController {
   }
 
   @Get(':id')
+  @Public()
   async findOne(@Param('id') id: string) {
     this.logger.log('findOne');
     return {

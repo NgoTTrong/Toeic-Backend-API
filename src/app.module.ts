@@ -35,7 +35,6 @@ import { ChatbotModule } from './features/chatbot/chatbot.module';
     ChatbotModule,
     GroupCommentModule,
     PostModule,
-    GroupModule,
   ],
   controllers: [AppController],
   providers: [AppService, supabaseClientProvider],
