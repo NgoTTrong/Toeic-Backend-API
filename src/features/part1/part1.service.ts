@@ -15,6 +15,7 @@ export class Part1Service {
       data: {
         title: title,
         creatorId: userId,
+        
       },
     });
   }

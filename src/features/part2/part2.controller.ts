@@ -61,7 +61,8 @@ export class Part2Controller {
     return this.part2Service.update(id, updatepart2Dto);
   }
 
-  @Delete(':id')
+  @Delete(':id')                      
+  @Public()
   remove(@Param('id') id: string) {
     return this.part2Service.remove(id);
   }

@@ -60,6 +60,7 @@ export class Part7Controller {
   }
 
   @Delete(':id')
+  @Public()
   remove(@Param('id') id: string) {
     return this.part7Service.remove(id);
   }

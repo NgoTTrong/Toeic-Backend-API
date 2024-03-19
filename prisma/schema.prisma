@@ -20,27 +20,28 @@ model User {
   address          String?
   commentExams     CommentExam[]
   commentFeeds     CommentFeed[]
+  Exam             Exam[]
   Feed             Feed[]
+  FlashCard        FlashCard[]
   likeCommentExams LikeCommentExam[]
   likeCommentFeeds LikeCommentFeed[]
   likeExams        LikeExam[]
   likeFeeds        LikeFeed[]
   notifications    NotificationUser[]
   Part1            Part1[]
-  Payment          Payment[]
-  rank             Rank?              @relation(fields: [rankId], references: [id])
   Part2            Part2[]
   Part3            Part3[]
   Part4            Part4[]
   Part5            Part5[]
   Part6            Part6[]
   Part7            Part7[]
-  Exam             Exam[]
-  FlashCard        FlashCard[]
   Group            Group[]
   GroupMember      GroupMember[]
   GroupPost        GroupPost[]
   GroupPostComment GroupPostComment[]
+  Payment          Payment[]
+  rank             Rank?              @relation(fields: [rankId], references: [id])
+  ExamHistory      ExamHistory[]
 
   @@index([id, email])
 }
@@ -161,9 +162,9 @@ model Exam {
   title        String
   creatorId    String?
   isPublished  Boolean       @default(false)
-  creator      User?         @relation(fields: [creatorId], references: [id])
   comments     CommentExam[]
   category     ExamCategory? @relation(fields: [categoryId], references: [id])
+  creator      User?         @relation(fields: [creatorId], references: [id])
   part1        Part1?        @relation(fields: [part1Id], references: [id])
   part2        Part2?        @relation(fields: [part2Id], references: [id])
   part3        Part3?        @relation(fields: [part3Id], references: [id])
@@ -172,6 +173,7 @@ model Exam {
   part6        Part6?        @relation(fields: [part6Id], references: [id])
   part7        Part7?        @relation(fields: [part7Id], references: [id])
   likes        LikeExam[]
+  ExamHistory  ExamHistory[]
 
   @@index([id])
 }
@@ -223,13 +225,13 @@ model LikeCommentExam {
 
 model Part1 {
   id             String          @id @default(uuid())
-  createdAt      DateTime        @default(now())
   thumbnail      String?
   creatorId      String?
   duration       Int?
   introduction   String?
   numOfQuestions Int?
   title          String?
+  createdAt      DateTime        @default(now())
   audioUrl       String?
   exams          Exam[]
   creator        User?           @relation(fields: [creatorId], references: [id], onDelete: Cascade)
@@ -240,13 +242,13 @@ model Part1 {
 
 model Part1Question {
   id         String   @id @default(uuid())
-  imageUrls  String[]
   audioUrl   String?
+  imageUrls  String[]
   questionId String
   part1Id    String
   position   Int?
-  part1      Part1    @relation(fields: [part1Id], references: [id])
-  question   Question @relation(fields: [questionId], references: [id])
+  part1      Part1    @relation(fields: [part1Id], references: [id], onDelete: Cascade)
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@index([id, part1Id])
 }
@@ -255,12 +257,12 @@ model Part2 {
   id             String          @id @default(uuid())
   createdAt      DateTime        @default(now())
   thumbnail      String?
-  creatorId      String?
   duration       Int?
   introduction   String?
   numOfQuestions Int?
-  audioUrl       String?
+  creatorId      String?
   title          String?
+  audioUrl       String?
   exams          Exam[]
   creator        User?           @relation(fields: [creatorId], references: [id])
   part2Questions Part2Question[]
@@ -271,12 +273,12 @@ model Part2 {
 model Part2Question {
   id         String   @id @default(uuid())
   createdAt  DateTime @default(now())
-  questionId String
   audioUrl   String?
+  questionId String
   part2Id    String
   position   Int?
-  part2      Part2    @relation(fields: [part2Id], references: [id])
-  question   Question @relation(fields: [questionId], references: [id])
+  part2      Part2    @relation(fields: [part2Id], references: [id], onDelete: Cascade)
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@index([id, part2Id])
 }
@@ -285,11 +287,12 @@ model Part3 {
   id             String          @id @default(uuid())
   createdAt      DateTime        @default(now())
   thumbnail      String?
+  audioUrl       String?
   duration       Int?
   introduction   String?
   numOfQuestions Int?
-  title          String?
   creatorId      String?
+  title          String?
   exams          Exam[]
   creator        User?           @relation(fields: [creatorId], references: [id])
   part3Questions Part3Question[]
@@ -305,7 +308,7 @@ model Part3Question {
   part3Id             String
   position            Int?
   groupPart3Questions MappingPart3Question[]
-  part3               Part3                  @relation(fields: [part3Id], references: [id])
+  part3               Part3                  @relation(fields: [part3Id], references: [id], onDelete: Cascade)
 
   @@index([id, part3Id])
 }
@@ -314,8 +317,8 @@ model MappingPart3Question {
   part3QuestionId String
   questionId      String
   position        Int?
-  part3Question   Part3Question @relation(fields: [part3QuestionId], references: [id])
-  question        Question      @relation(fields: [questionId], references: [id])
+  part3Question   Part3Question @relation(fields: [part3QuestionId], references: [id], onDelete: Cascade)
+  question        Question      @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@id([part3QuestionId, questionId])
   @@unique([part3QuestionId, questionId])
@@ -329,8 +332,9 @@ model Part4 {
   duration       Int?
   introduction   String?
   numOfQuestions Int?
-  title          String?
   creatorId      String?
+  audioUrl       String?
+  title          String?
   exams          Exam[]
   creator        User?           @relation(fields: [creatorId], references: [id])
   part4Questions Part4Question[]
@@ -346,7 +350,7 @@ model Part4Question {
   part4Id             String
   position            Int?
   groupPart4Questions MappingPart4Question[]
-  part4               Part4                  @relation(fields: [part4Id], references: [id])
+  part4               Part4                  @relation(fields: [part4Id], references: [id], onDelete: Cascade)
 
   @@index([id, part4Id])
 }
@@ -354,9 +358,9 @@ model Part4Question {
 model MappingPart4Question {
   part4QuestionId String
   questionId      String
-  part4Question   Part4Question @relation(fields: [part4QuestionId], references: [id])
-  question        Question      @relation(fields: [questionId], references: [id])
   position        Int?
+  part4Question   Part4Question @relation(fields: [part4QuestionId], references: [id], onDelete: Cascade)
+  question        Question      @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@id([questionId, part4QuestionId])
   @@unique([part4QuestionId, questionId])
@@ -385,8 +389,8 @@ model Part5Question {
   part5Id    String
   questionId String
   position   Int?
-  part5      Part5    @relation(fields: [part5Id], references: [id])
-  question   Question @relation(fields: [questionId], references: [id])
+  part5      Part5    @relation(fields: [part5Id], references: [id], onDelete: Cascade)
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@index([part5Id, questionId])
 }
@@ -398,8 +402,8 @@ model Part6 {
   duration       Int?
   introduction   String?
   numOfQuestions Int?
-  title          String?
   creatorId      String?
+  title          String?
   exams          Exam[]
   creator        User?           @relation(fields: [creatorId], references: [id])
   part6Questions Part6Question[]
@@ -414,7 +418,7 @@ model Part6Question {
   part6Id             String
   position            Int?
   groupPart6Questions MappingPart6Question[]
-  part6               Part6                  @relation(fields: [part6Id], references: [id])
+  part6               Part6                  @relation(fields: [part6Id], references: [id], onDelete: Cascade)
 
   @@index([id, part6Id])
 }
@@ -423,8 +427,8 @@ model MappingPart6Question {
   part6QuestionId String
   questionId      String
   position        Int?
-  part6Question   Part6Question @relation(fields: [part6QuestionId], references: [id])
-  question        Question      @relation(fields: [questionId], references: [id])
+  part6Question   Part6Question @relation(fields: [part6QuestionId], references: [id], onDelete: Cascade)
+  question        Question      @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@id([part6QuestionId, questionId])
   @@unique([part6QuestionId, questionId])
@@ -438,8 +442,8 @@ model Part7 {
   duration       Int?
   introduction   String?
   numOfQuestions Int?
-  title          String?
   creatorId      String?
+  title          String?
   exams          Exam[]
   creator        User?           @relation(fields: [creatorId], references: [id])
   part7Questions Part7Question[]
@@ -454,7 +458,7 @@ model Part7Question {
   part7Id             String
   position            Int?
   groupPart7Questions MappingPart7Question[]
-  part7               Part7                  @relation(fields: [part7Id], references: [id])
+  part7               Part7                  @relation(fields: [part7Id], references: [id], onDelete: Cascade)
 
   @@index([id, part7Id])
 }
@@ -463,8 +467,8 @@ model MappingPart7Question {
   part7QuestionId String
   questionId      String
   position        Int?
-  part7Question   Part7Question @relation(fields: [part7QuestionId], references: [id])
-  question        Question      @relation(fields: [questionId], references: [id])
+  part7Question   Part7Question @relation(fields: [part7QuestionId], references: [id], onDelete: Cascade)
+  question        Question      @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@id([part7QuestionId, questionId])
   @@unique([part7QuestionId, questionId])
@@ -479,10 +483,9 @@ model Question {
   optionB        String?
   optionC        String?
   optionD        String?
-  topicId        String?
-  topic          Topic?                 @relation(fields: [topicId], references: [id])
-  explain        String?
   answer         Answer?
+  explain        String?
+  topicId        String?
   part3Questions MappingPart3Question[]
   part4Questions MappingPart4Question[]
   part6Questions MappingPart6Question[]
@@ -490,6 +493,7 @@ model Question {
   part1Questions Part1Question[]
   part2Questions Part2Question[]
   part5Questions Part5Question[]
+  topic          Topic?                 @relation(fields: [topicId], references: [id])
 
   @@index([id])
 }
@@ -580,24 +584,12 @@ model UserProgress {
   @@index([chapterId])
 }
 
-enum Answer {
-  A
-  B
-  C
-  D
-}
-
-enum Active {
-  ACTIVE
-  INACTIVE
-}
-
 model Word {
   id          String     @id @default(uuid())
   term        String
   define      String
-  FlashCard   FlashCard? @relation(fields: [flashCardId], references: [id])
   flashCardId String?
+  FlashCard   FlashCard? @relation(fields: [flashCardId], references: [id])
 
   @@index([id])
 }
@@ -651,18 +643,41 @@ model GroupPost {
 }
 
 model GroupPostComment {
-  id        String    @id @default(uuid())
-  createdAt DateTime  @default(now())
-  memberId  String?
-  member    User?     @relation(fields: [memberId], references: [id])
-  message   String?
-  postId    String
-  post      GroupPost @relation(fields: [postId], references: [id])
-  numOfReplys Int @default(0)
-  parentId  String?
+  id          String    @id @default(uuid())
+  createdAt   DateTime  @default(now())
+  memberId    String?
+  member      User?     @relation(fields: [memberId], references: [id])
+  message     String?
+  postId      String
+  post        GroupPost @relation(fields: [postId], references: [id])
+  numOfReplys Int       @default(0)
+  parentId    String?
+}
+
+model ExamHistory {
+  id            String @id @default(uuid())
+  examId        String
+  exam          Exam   @relation(fields: [examId], references: [id])
+  userId        String
+  user          User   @relation(fields: [userId], references: [id])
+  result        Json[]
+  score         Int?
+  numOfCorrects Int?
 }
 
 enum GroupMemberStatus {
   WAITING
   JOINED
+}
+
+enum Answer {
+  A
+  B
+  C
+  D
+}
+
+enum Active {
+  ACTIVE
+  INACTIVE
 }
