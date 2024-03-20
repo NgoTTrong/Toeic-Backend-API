@@ -9,7 +9,6 @@ import { environments } from './environments';
 import { join } from 'path';
 import { GroupCommentModule } from './group-comment/group-comment.module';
 import { PostModule } from './post/post.module';
-import { GroupModule } from './group/group.module';
 import supabaseClientProvider from './supabase/supabase.provider';
 
 import { FeaturesModule } from './features/features.module';

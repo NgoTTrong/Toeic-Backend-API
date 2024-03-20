@@ -21,6 +21,7 @@ import { CommentModule } from './comment/comment.module';
 import { ExamCategoryModule } from './exam-category/exam-category.module';
 import { FlashCardModule } from './flashcard/flashcard.module';
 import { GroupModule } from './group/group.module';
+import { ToxicDetectionModule } from './toxic-detection/toxic-detection.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { GroupModule } from './group/group.module';
     ExamCategoryModule,
     FlashCardModule,
     GroupModule,
+    ToxicDetectionModule,
   ],
   controllers: [],
   providers: [],
