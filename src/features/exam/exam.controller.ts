@@ -13,6 +13,7 @@ import { CreateExamDto } from './dto/create-exam.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
 import { GetUser, Public } from 'src/core/decorators';
 import { Payload } from 'src/core/type/jwt.payload';
+import { SubmitExamDto } from './dto/submit-exam.dto';
 
 @Controller('exam')
 export class ExamController {
@@ -21,6 +22,19 @@ export class ExamController {
   @Post()
   create(@Body() createExamDto: CreateExamDto, @GetUser() user: Payload) {
     return this.examService.create(createExamDto, user.id);
+  }
+  @Post('/submit/:examId')
+  submitExam(
+    @Body() dto: SubmitExamDto,
+    @GetUser() user: Payload,
+    @Param('examId') examId: string,
+  ) {
+    return this.examService.submitExam(user.id, examId, dto?.result);
+  }
+  @Get('/history/:historyId')
+  @Public()
+  getHistoryExam(@Param('historyId') historyId: string) {
+    return this.examService.getHistoryExam(historyId);
   }
   @Get('/get-all-of-user')
   @Public()

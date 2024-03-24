@@ -1,10 +1,6 @@
 import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
-import { CreateChatbotDto } from './dto/create-chatbot.dto';
 import { UpdateChatbotDto } from './dto/update-chatbot.dto';
-import {
-  GenerateContentRequest,
-  GenerateContentResponse,
-} from '@google/generative-ai';
+import { GenerateContentResponse } from '@google/generative-ai';
 
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
@@ -12,14 +8,12 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 export class ChatbotService {
   private apiKey = 'AIzaSyAueER6raTutLUxkVZCWUl_7tgxt1e6-_A';
 
-  async generateText(
-    prompt: string,
-  ): Promise<GenerateContentResponse> {
+  async generateText(prompt: string): Promise<GenerateContentResponse> {
     try {
       const genAI = new GoogleGenerativeAI(this.apiKey);
       const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
       const result = await model.generateContent(prompt);
-      const response = await result.response;
+      const response = result.response;
       const text = response.text() as GenerateContentResponse;
       return text;
     } catch (error) {
@@ -30,8 +24,6 @@ export class ChatbotService {
       }
     }
   }
-
-
 
   findAll() {
     return `This action returns all chatbot`;
