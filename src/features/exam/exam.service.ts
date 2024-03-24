@@ -73,7 +73,15 @@ export class ExamService {
     });
   }
   findAllByUser() {
-    return this.prismaService.exam.findMany();
+    return this.prismaService.exam.findMany({
+      include: {
+        category: {
+          select: {
+            name: true,
+          }
+        }
+      }
+    });
   }
   findOne(id: string) {
     return this.prismaService.exam.findFirst({
