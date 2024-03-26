@@ -2,13 +2,9 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Client } from 'pg';
 @Injectable()
 export class UserService {
-  constructor(
-    private prismaService: PrismaService,
-    @Inject('SUPABASE_CLIENT') private readonly supabaseClient: Client,
-  ) {}
+  constructor(private prismaService: PrismaService) {}
 
   async create(createUserDto: CreateUserDto) {
     const user = await this.prismaService.user.findFirst({
@@ -33,12 +29,6 @@ export class UserService {
       skip,
       take,
     });
-  }
-
-  async getCurrentUserLogin(userId) {
-    const query = 'SELECT * FROM users WHERE id = $1';
-    const result = await this.supabaseClient.query(query, [userId]);
-    return result.rows[0];
   }
 
   findOne(id: string) {
