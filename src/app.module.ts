@@ -7,12 +7,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { environments } from './environments';
 import { join } from 'path';
-import { GroupCommentModule } from './group-comment/group-comment.module';
-import { PostModule } from './post/post.module';
-import supabaseClientProvider from './supabase/supabase.provider';
-
 import { FeaturesModule } from './features/features.module';
-import { ChatbotModule } from './features/chatbot/chatbot.module';
 @Module({
   imports: [
     PrismaModule,
@@ -31,11 +26,8 @@ import { ChatbotModule } from './features/chatbot/chatbot.module';
       },
     }),
     FeaturesModule,
-    ChatbotModule,
-    GroupCommentModule,
-    PostModule,
   ],
   controllers: [AppController],
-  providers: [AppService, supabaseClientProvider],
+  providers: [AppService],
 })
 export class AppModule {}

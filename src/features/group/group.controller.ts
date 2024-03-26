@@ -6,6 +6,7 @@ import { CreateGroupDto } from './dto/create-group.dto';
 import { GroupMemberStatus } from '@prisma/client';
 import { ReplyCommentPostDto } from './dto/reply-comment';
 import { CommentPostDto } from './dto/comment-post';
+import { CreatePost } from './dto/create-post';
 
 @Controller('group')
 export class GroupController {
@@ -71,7 +72,7 @@ export class GroupController {
   @Post('/:groupId/post')
   createPost(
     @Param('groupId') groupId: string,
-    @Body() dto: CreateGroupDto,
+    @Body() dto: CreatePost,
     @GetUser() user: Payload,
   ) {
     return this.groupService.createPost(user?.id, groupId, dto);

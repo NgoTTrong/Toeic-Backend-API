@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { GroupMemberStatus } from '@prisma/client';
-import { CreatePostDto } from 'src/post/dto/create-post.dto';
+import { CreatePost } from './dto/create-post';
 
 @Injectable()
 export class GroupService {
@@ -108,7 +108,7 @@ export class GroupService {
       },
     });
   }
-  createPost(userId: string, groupId: string, dto: CreatePostDto) {
+  createPost(userId: string, groupId: string, dto: CreatePost) {
     return this.prismaService.groupPost.create({
       data: {
         creatorId: userId,
