@@ -1,4 +1,4 @@
-import { IsArray, IsOptional, IsString } from "class-validator";
+import { IsArray, IsOptional, IsString } from 'class-validator';
 
 export class CreateQuestionDto {
   @IsArray()
@@ -16,5 +16,4 @@ export class CreateQuestionDto {
   @IsString()
   @IsOptional()
   imageUrl: string;
-
 }

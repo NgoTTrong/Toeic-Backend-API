@@ -7,6 +7,7 @@ import { CreateChapterDto } from './dto/create-chapter.dto';
 import { UpdateChapterDto } from './dto/update-chapter.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Attachment, Chapter } from '@prisma/client';
+import { AddQuestionDto } from './dto/add-question.dto';
 
 @Injectable()
 export class ChapterService {
@@ -22,6 +23,16 @@ export class ChapterService {
   findOne(id: string) {
     return this.prismaService.chapter.findFirst({
       where: { id },
+      include: {
+        ChapterQuestion: {
+          include: {
+            question: true,
+          },
+          orderBy: {
+            position: 'asc',
+          },
+        },
+      },
     });
   }
   async getDetailChapter(chapterId: string, courseId: string, userId: string) {
@@ -136,5 +147,27 @@ export class ChapterService {
       });
     }
     return this.prismaService.chapter.delete({ where: { id } });
+  }
+
+  async addQuestion(chapterId: string, dto: AddQuestionDto) {
+    const createdQuestion = await this.prismaService.question.create({
+      data: {
+        ...dto?.question,
+      },
+    });
+    const chapters = await this.prismaService.chapterQuestion.findMany({
+      where: {
+        chapterId,
+      },
+    });
+    return await this.prismaService.chapterQuestion.create({
+      data: {
+        chapterId,
+        questionId: createdQuestion?.id,
+        audioUrl: dto?.audioUrl,
+        imageUrl: dto?.imageUrl,
+        position: chapters?.length + 1,
+      },
+    });
   }
 }

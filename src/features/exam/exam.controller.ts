@@ -19,17 +19,13 @@ import { SubmitExamDto } from './dto/submit-exam.dto';
 export class ExamController {
   constructor(private readonly examService: ExamService) {}
 
-  @Post()
-  create(@Body() createExamDto: CreateExamDto, @GetUser() user: Payload) {
-    return this.examService.create(createExamDto, user.id);
-  }
   @Post('/submit/:examId')
   submitExam(
     @Body() dto: SubmitExamDto,
     @GetUser() user: Payload,
     @Param('examId') examId: string,
   ) {
-    return this.examService.submitExam(user.id, examId, dto?.result);
+    return this.examService.submitExam(user.id, examId, dto?.result, dto?.time);
   }
   @Get('/history/:historyId')
   @Public()
@@ -41,6 +37,18 @@ export class ExamController {
   findAllByUser(@Query('userId') userId: string) {
     return this.examService.findAllByUser();
   }
+
+  @Get('detail/:id')
+  @Public()
+  findOneDetail(@Param('id') id: string) {
+    return this.examService.findOneDetail(id);
+  }
+
+  @Post()
+  create(@Body() createExamDto: CreateExamDto, @GetUser() user: Payload) {
+    return this.examService.create(createExamDto, user.id);
+  }
+
   @Get()
   findAll(@GetUser() user: Payload) {
     return this.examService.findAll(user?.id);
@@ -51,11 +59,7 @@ export class ExamController {
   findOne(@Param('id') id: string) {
     return this.examService.findOne(id);
   }
-  @Get('detail/:id')
-  @Public()
-  findOneDetail(@Param('id') id: string) {
-    return this.examService.findOneDetail(id);
-  }
+
   @Patch(':id')
   @Public()
   update(@Param('id') id: string, @Body() updateExamDto: UpdateExamDto) {

@@ -79,9 +79,9 @@ export class ExamService {
         category: {
           select: {
             name: true,
-          }
-        }
-      }
+          },
+        },
+      },
     });
   }
   findOne(id: string) {
@@ -288,6 +288,7 @@ export class ExamService {
     userId: string,
     examId: string,
     result: { questionId: string; option: 'A' | 'B' | 'C' | 'D' }[],
+    time: number,
   ) {
     const exam = await this.prismaService.exam.findFirst({
       where: {
@@ -440,6 +441,7 @@ export class ExamService {
         examId,
         result,
         numOfCorrects,
+        time,
         score: Math.floor(
           (numOfCorrects * 1000) /
             (flattenQuestion?.length == 0 ? 1 : flattenQuestion?.length),

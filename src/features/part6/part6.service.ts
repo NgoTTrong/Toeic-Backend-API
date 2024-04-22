@@ -8,7 +8,7 @@ import { CreateQuestionDto } from './dto/create-question.dto';
 @Injectable()
 export class Part6Service {
   constructor(private readonly prismaService: PrismaService) {}
-  
+
   async create(title: string, userId: string) {
     return this.prismaService.part6.create({
       data: {
@@ -63,7 +63,7 @@ export class Part6Service {
     const _part6Question = await this.prismaService.part6Question.update({
       where: { id: part6QuestionId },
       data: {
-        imageUrls: dto?.imageUrl ? [dto?.imageUrl] : []
+        imageUrls: dto?.imageUrl ? [dto?.imageUrl] : [],
       },
     });
 
@@ -193,8 +193,4 @@ export class Part6Service {
       ),
     );
   }
-
-
-
-  
 }

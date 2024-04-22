@@ -1,4 +1,4 @@
-import { IsArray } from 'class-validator';
+import { IsArray, IsNumber } from 'class-validator';
 
 export class SubmitExamDto {
   @IsArray()
@@ -6,4 +6,6 @@ export class SubmitExamDto {
     questionId: string;
     option: 'A' | 'B' | 'C' | 'D';
   }[];
+  @IsNumber()
+  time: number;
 }

@@ -13,10 +13,20 @@ import { UpdateChapterDto } from './dto/update-chapter.dto';
 import { GetUser, Public } from 'src/core/decorators';
 import { DetailChapterDto } from './dto/detail-chapter.dto';
 import { Payload } from 'src/core/type/jwt.payload';
+import { AddQuestionDto } from './dto/add-question.dto';
 
 @Controller('chapter')
 export class ChapterController {
   constructor(private readonly chapterService: ChapterService) {}
+
+  @Post('add-question/:chapterId')
+  @Public()
+  addQuestion(
+    @Body() dto: AddQuestionDto,
+    @Param('chapterId') chapterId: string,
+  ) {
+    return this.chapterService.addQuestion(chapterId, dto);
+  }
 
   @Post()
   @Public()
