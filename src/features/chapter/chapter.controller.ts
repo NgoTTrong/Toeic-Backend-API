@@ -14,6 +14,9 @@ import { GetUser, Public } from 'src/core/decorators';
 import { DetailChapterDto } from './dto/detail-chapter.dto';
 import { Payload } from 'src/core/type/jwt.payload';
 import { AddQuestionDto } from './dto/add-question.dto';
+import { UpdateQuestionDto } from './dto/update-question.dto';
+import { ReorderDto } from './dto/reorder.dto';
+import { AnswerQuestion } from './dto/answer-question';
 
 @Controller('chapter')
 export class ChapterController {
@@ -26,6 +29,46 @@ export class ChapterController {
     @Param('chapterId') chapterId: string,
   ) {
     return this.chapterService.addQuestion(chapterId, dto);
+  }
+
+  @Delete('delete-question/:questionId')
+  @Public()
+  deleteQuestion(@Param('questionId') questionId: string) {
+    return this.chapterService.deleteQuestion(questionId);
+  }
+
+  @Patch('update-question/:questionId')
+  @Public()
+  updateQuestion(
+    @Param('questionId') questionId: string,
+    @Body() dto: UpdateQuestionDto,
+  ) {
+    return this.chapterService.updateQuestion(questionId, dto);
+  }
+  @Post('reorder-questions/:chapterId')
+  @Public()
+  reorderQuestion(
+    @Param('chapterId') chapterId: string,
+    @Body() reorderDto: ReorderDto,
+  ) {
+    return this.chapterService.reorderQuestions(
+      chapterId,
+      reorderDto.reorderData,
+    );
+  }
+
+  @Post('answer-question/:chapterId')
+  answer(
+    @Param('chapterId') chapterId: string,
+    @Body() dto: AnswerQuestion,
+    @GetUser() user: Payload,
+  ) {
+    return this.chapterService.answerQuestion(
+      user?.id,
+      chapterId,
+      dto?.questionId,
+      dto?.answer,
+    );
   }
 
   @Post()

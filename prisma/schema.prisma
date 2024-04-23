@@ -595,7 +595,7 @@ model UserProgress {
   isCompleted Boolean  @default(false)
   chapterId   String
   userId      String
-  answers     Json     @default("{}")
+  answers     Json[]   @default([])
   chapter     Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
 
   @@unique([userId, chapterId])
