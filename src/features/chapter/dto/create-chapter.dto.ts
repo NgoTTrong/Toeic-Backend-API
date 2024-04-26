@@ -1,4 +1,4 @@
-import { IsBoolean, IsString } from 'class-validator';
+import { IsBoolean, IsOptional, IsString } from 'class-validator';
 
 export class CreateChapterDto {
   @IsString()
@@ -11,4 +11,7 @@ export class CreateChapterDto {
   videoUrl: string;
   @IsBoolean()
   isPublished: boolean;
+  @IsString()
+  @IsOptional()
+  topicId: string;
 }

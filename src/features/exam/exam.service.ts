@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateExamDto } from './dto/create-exam.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Question } from '@prisma/client';
+import { Question, Topic } from '@prisma/client';
 
 @Injectable()
 export class ExamService {
@@ -299,7 +299,11 @@ export class ExamService {
           include: {
             part1Questions: {
               include: {
-                question: true,
+                question: {
+                  include: {
+                    topic: true,
+                  },
+                },
               },
             },
           },
@@ -308,7 +312,11 @@ export class ExamService {
           include: {
             part2Questions: {
               include: {
-                question: true,
+                question: {
+                  include: {
+                    topic: true,
+                  },
+                },
               },
             },
           },
@@ -317,7 +325,15 @@ export class ExamService {
           include: {
             part3Questions: {
               include: {
-                groupPart3Questions: { include: { question: true } },
+                groupPart3Questions: {
+                  include: {
+                    question: {
+                      include: {
+                        topic: true,
+                      },
+                    },
+                  },
+                },
               },
             },
           },
@@ -326,7 +342,15 @@ export class ExamService {
           include: {
             part4Questions: {
               include: {
-                groupPart4Questions: { include: { question: true } },
+                groupPart4Questions: {
+                  include: {
+                    question: {
+                      include: {
+                        topic: true,
+                      },
+                    },
+                  },
+                },
               },
             },
           },
@@ -335,7 +359,11 @@ export class ExamService {
           include: {
             part5Questions: {
               include: {
-                question: true,
+                question: {
+                  include: {
+                    topic: true,
+                  },
+                },
               },
             },
           },
@@ -344,7 +372,15 @@ export class ExamService {
           include: {
             part6Questions: {
               include: {
-                groupPart6Questions: { include: { question: true } },
+                groupPart6Questions: {
+                  include: {
+                    question: {
+                      include: {
+                        topic: true,
+                      },
+                    },
+                  },
+                },
               },
             },
           },
@@ -353,14 +389,22 @@ export class ExamService {
           include: {
             part7Questions: {
               include: {
-                groupPart7Questions: { include: { question: true } },
+                groupPart7Questions: {
+                  include: {
+                    question: {
+                      include: {
+                        topic: true,
+                      },
+                    },
+                  },
+                },
               },
             },
           },
         },
       },
     });
-    let flattenQuestion: Question[] = [];
+    let flattenQuestion: (Question & { topic: Topic })[] = [];
     flattenQuestion = exam?.part1
       ? exam?.part1?.part1Questions?.map((e) => e?.question)
       : [...flattenQuestion];
@@ -426,6 +470,7 @@ export class ExamService {
       : [...flattenQuestion];
 
     let numOfCorrects: number = 0;
+    let wrongTopics: { topicId: string; name: string }[] = [];
     for (let i = 0; i < result.length; i++) {
       const idx = flattenQuestion.findIndex(
         (e) => e?.id == result[i]?.questionId,
@@ -433,12 +478,25 @@ export class ExamService {
       if (idx != -1) {
         numOfCorrects +=
           flattenQuestion[idx]?.answer == result[i]?.option ? 1 : 0;
+        if (flattenQuestion[idx]?.answer != result[i]?.option) {
+          if (
+            !wrongTopics.some(
+              (e) => e?.topicId == flattenQuestion?.[idx]?.topicId,
+            )
+          ) {
+            wrongTopics.push({
+              topicId: flattenQuestion?.[idx]?.topicId,
+              name: flattenQuestion?.[idx]?.topic?.name,
+            });
+          }
+        }
       }
     }
     return this.prismaService.examHistory.create({
       data: {
         userId,
         examId,
+        wrongTopics,
         result,
         numOfCorrects,
         time,
@@ -531,5 +589,37 @@ export class ExamService {
       exam,
       history: _history,
     };
+  }
+  async getRandomChapter(topicId: string) {
+    const chapters = await this.prismaService.chapter.findMany({
+      where: { topicId },
+    });
+    return chapters[Math.floor(Math.random() * chapters?.length)];
+  }
+  async receiveCoursePractive(historyId: string, userId: string) {
+    const history = await this.prismaService.examHistory.findFirst({
+      where: { id: historyId },
+    });
+    const topicIds = history.wrongTopics.map((e: any) => e?.topicId as string);
+
+    const chapters = await Promise.all(
+      topicIds.map((topicId) => this.getRandomChapter(topicId)),
+    );
+    const practiceCourse = await this.prismaService.practiceCourse.create({
+      data: {
+        userId,
+      },
+    });
+    await Promise.all(
+      chapters.map((chapter) =>
+        this.prismaService.practiceCourseChapter.create({
+          data: {
+            chapterId: chapter?.id,
+            practiceCourseId: practiceCourse?.id,
+          },
+        }),
+      ),
+    );
+    return practiceCourse?.id;
   }
 }

@@ -42,6 +42,7 @@ model User {
   Part7            Part7[]
   Payment          Payment[]
   rank             Rank?              @relation(fields: [rankId], references: [id])
+  PracticeCourse   PracticeCourse[]
 
   @@index([id, email])
 }
@@ -518,6 +519,7 @@ model Course {
   imageUrl    String?
   price       Float?
   isPublished Boolean         @default(false)
+  isPrivate   Boolean         @default(false)
   categoryId  String?
   attachments Attachment[]
   chapters    Chapter[]
@@ -546,21 +548,22 @@ model CourseCategory {
 }
 
 model Chapter {
-  id              String            @id @default(uuid())
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  title           String
-  description     String?
-  videoUrl        String?
-  position        Int
-  isPublished     Boolean           @default(false)
-  isFree          Boolean           @default(false)
-  courseId        String
-  course          Course            @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  userProgress    UserProgress[]
-  ChapterQuestion ChapterQuestion[]
-  topicId         String?
-  topic           Topic?            @relation(fields: [topicId], references: [id])
+  id                    String                  @id @default(uuid())
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+  title                 String
+  description           String?
+  videoUrl              String?
+  position              Int
+  isPublished           Boolean                 @default(false)
+  isFree                Boolean                 @default(false)
+  courseId              String
+  course                Course                  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  userProgress          UserProgress[]
+  ChapterQuestion       ChapterQuestion[]
+  topicId               String?
+  topic                 Topic?                  @relation(fields: [topicId], references: [id])
+  PracticeCourseChapter PracticeCourseChapter[]
 
   @@index([courseId])
 }
@@ -672,11 +675,30 @@ model GroupPostComment {
   post        GroupPost @relation(fields: [postId], references: [id])
 }
 
+model PracticeCourse {
+  id                    String                  @id @default(uuid())
+  createdAt             DateTime                @default(now())
+  userId                String
+  user                  User                    @relation(fields: [userId], references: [id])
+  PracticeCourseChapter PracticeCourseChapter[]
+}
+
+model PracticeCourseChapter {
+  chapterId        String
+  chapter          Chapter        @relation(fields: [chapterId], references: [id])
+  practiceCourseId String
+  practiceCourse   PracticeCourse @relation(fields: [practiceCourseId], references: [id])
+  createdAt        DateTime       @default(now())
+
+  @@id([chapterId, practiceCourseId])
+}
+
 model ExamHistory {
   id            String @id @default(uuid())
   examId        String
   userId        String
-  result        Json[]
+  result        Json[] @default([])
+  wrongTopics   Json[] @default([])
   score         Int?
   numOfCorrects Int?
   time          Int?

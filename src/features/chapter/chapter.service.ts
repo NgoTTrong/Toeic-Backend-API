@@ -25,6 +25,7 @@ export class ChapterService {
     return this.prismaService.chapter.findFirst({
       where: { id },
       include: {
+        topic: true,
         ChapterQuestion: {
           include: {
             question: true,
