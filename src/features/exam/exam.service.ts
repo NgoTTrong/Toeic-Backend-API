@@ -96,6 +96,60 @@ export class ExamService {
         introduction: true,
         categoryId: true,
         thumbnail: true,
+        category: {
+          select: {
+            name: true,
+          },
+        },
+        part1Id: true,
+        part1: {
+          select: {
+            id: true,
+            title: true,
+          },
+        },
+        part2Id: true,
+        part2: {
+          select: {
+            id: true,
+            title: true,
+          },
+        },
+        part3Id: true,
+        part3: {
+          select: {
+            id: true,
+            title: true,
+          },
+        },
+        part4Id: true,
+        part4: {
+          select: {
+            id: true,
+            title: true,
+          },
+        },
+        part5Id: true,
+        part5: {
+          select: {
+            id: true,
+            title: true,
+          },
+        },
+        part6Id: true,
+        part6: {
+          select: {
+            id: true,
+            title: true,
+          },
+        },
+        part7Id: true,
+        part7: {
+          select: {
+            id: true,
+            title: true,
+          },
+        },
       },
     });
   }

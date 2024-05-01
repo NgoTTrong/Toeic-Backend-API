@@ -20,6 +20,7 @@ import { PaymentModule } from './payment/payment.module';
 import { ExamCategoryModule } from './exam-category/exam-category.module';
 import { FlashCardModule } from './flashcard/flashcard.module';
 import { GroupModule } from './group/group.module';
+import { LeaderboardModule } from './leaderboard/leaderboard.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { GroupModule } from './group/group.module';
     FlashCardModule,
     GroupModule,
     ChatbotModule,
+    LeaderboardModule,
   ],
   controllers: [],
   providers: [],

@@ -43,6 +43,7 @@ model User {
   Payment          Payment[]
   rank             Rank?              @relation(fields: [rankId], references: [id])
   PracticeCourse   PracticeCourse[]
+  LeaderBoard      LeaderBoard[]
 
   @@index([id, email])
 }
@@ -52,6 +53,8 @@ model Rank {
   createdAt   DateTime @default(now())
   name        String
   description String?
+  minPoint    Int?
+  maxPoint    Int?
   rankIcon    String
   users       User[]
 
@@ -148,6 +151,7 @@ model Exam {
   createdAt    DateTime      @default(now())
   audioUrl     String?
   breakPoints  Int[]         @default([])
+  point        Int?          @default(100)
   thumbnail    String?
   categoryId   String?
   part1Id      String?
@@ -518,6 +522,7 @@ model Course {
   description String?
   imageUrl    String?
   price       Float?
+  point       Int?            @default(100)
   isPublished Boolean         @default(false)
   isPrivate   Boolean         @default(false)
   categoryId  String?
@@ -679,6 +684,8 @@ model PracticeCourse {
   id                    String                  @id @default(uuid())
   createdAt             DateTime                @default(now())
   userId                String
+  name                  String?
+  point                 Int?                    @default(100)
   user                  User                    @relation(fields: [userId], references: [id])
   PracticeCourseChapter PracticeCourseChapter[]
 }
@@ -704,6 +711,15 @@ model ExamHistory {
   time          Int?
   exam          Exam   @relation(fields: [examId], references: [id])
   user          User   @relation(fields: [userId], references: [id])
+}
+
+model LeaderBoard {
+  userId    String
+  point     Int
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@id([userId])
 }
 
 enum GroupMemberStatus {
