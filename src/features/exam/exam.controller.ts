@@ -43,7 +43,13 @@ export class ExamController {
   findOneDetail(@Param('id') id: string) {
     return this.examService.findOneDetail(id);
   }
-
+  @Get('receive-course/:historyId')
+  receiveCourse(
+    @Param('historyId') historyId: string,
+    @GetUser() user: Payload,
+  ) {
+    return this.examService.receiveCoursePractive(historyId, user?.id);
+  }
   @Post()
   create(@Body() createExamDto: CreateExamDto, @GetUser() user: Payload) {
     return this.examService.create(createExamDto, user.id);
