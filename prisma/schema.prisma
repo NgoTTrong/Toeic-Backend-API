@@ -524,7 +524,6 @@ model Course {
   price       Float?
   point       Int?            @default(100)
   isPublished Boolean         @default(false)
-  isPrivate   Boolean         @default(false)
   categoryId  String?
   attachments Attachment[]
   chapters    Chapter[]
@@ -681,10 +680,11 @@ model GroupPostComment {
 }
 
 model PracticeCourse {
-  id                    String                  @id @default(uuid())
-  createdAt             DateTime                @default(now())
-  userId                String
-  name                  String?
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  userId    String
+  name      String?
+  thumbnail String?
   point                 Int?                    @default(100)
   user                  User                    @relation(fields: [userId], references: [id])
   PracticeCourseChapter PracticeCourseChapter[]
@@ -701,16 +701,17 @@ model PracticeCourseChapter {
 }
 
 model ExamHistory {
-  id            String @id @default(uuid())
+  id            String   @id @default(uuid())
+  createdAt     DateTime @default(now())
   examId        String
   userId        String
-  result        Json[] @default([])
-  wrongTopics   Json[] @default([])
+  result        Json[]   @default([])
+  wrongTopics   Json[]   @default([])
   score         Int?
   numOfCorrects Int?
   time          Int?
-  exam          Exam   @relation(fields: [examId], references: [id])
-  user          User   @relation(fields: [userId], references: [id])
+  exam          Exam     @relation(fields: [examId], references: [id])
+  user          User     @relation(fields: [userId], references: [id])
 }
 
 model LeaderBoard {

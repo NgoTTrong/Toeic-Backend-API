@@ -21,6 +21,7 @@ import { ExamCategoryModule } from './exam-category/exam-category.module';
 import { FlashCardModule } from './flashcard/flashcard.module';
 import { GroupModule } from './group/group.module';
 import { LeaderboardModule } from './leaderboard/leaderboard.module';
+import { PracticeCourseModule } from './practice-course/practice-course.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { LeaderboardModule } from './leaderboard/leaderboard.module';
     GroupModule,
     ChatbotModule,
     LeaderboardModule,
+    PracticeCourseModule,
   ],
   controllers: [],
   providers: [],

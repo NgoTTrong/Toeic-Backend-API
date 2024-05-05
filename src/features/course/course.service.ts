@@ -73,7 +73,6 @@ export class CourseService {
     const courses = await this.prismaService.course.findMany({
       where: {
         isPublished: true,
-        isPrivate: false,
         title: {
           contains: title,
         },

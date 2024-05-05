@@ -3,6 +3,7 @@ import { CreateExamDto } from './dto/create-exam.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Question, Topic } from '@prisma/client';
+import * as dayjs from 'dayjs';
 
 @Injectable()
 export class ExamService {
@@ -524,7 +525,15 @@ export class ExamService {
       : [...flattenQuestion];
 
     let numOfCorrects: number = 0;
-
+    for (let i = 0; i < result.length; i++) {
+      const idx = flattenQuestion.findIndex(
+        (e) => e?.id == (result[i] as any)?.questionId,
+      );
+      if (idx != -1) {
+        numOfCorrects +=
+          flattenQuestion[idx]?.answer == (result[i] as any)?.option ? 1 : 0;
+      }
+    }
     return this.prismaService.examHistory.create({
       data: {
         userId,
@@ -720,32 +729,57 @@ export class ExamService {
     const chapters = await this.prismaService.chapter.findMany({
       where: { topicId },
     });
-    return chapters[Math.floor(Math.random() * chapters?.length)];
+    return chapters[Math.floor(Math.random() * chapters?.length)] ?? null;
   }
   async receiveCoursePractive(historyId: string, userId: string) {
     const history = await this.prismaService.examHistory.findFirst({
       where: { id: historyId },
+      include: {
+        exam: true,
+      },
     });
     const topicIds = history.wrongTopics.map((e: any) => e?.topicId as string);
-
     const chapters = await Promise.all(
       topicIds.map((topicId) => this.getRandomChapter(topicId)),
     );
+
     const practiceCourse = await this.prismaService.practiceCourse.create({
       data: {
         userId,
+        name:
+          'Practice - ' +
+          history?.exam?.title +
+          ' - ' +
+          dayjs(new Date()).format('DD/MM/YYYY'),
+        thumbnail: history?.exam?.thumbnail,
       },
     });
     await Promise.all(
-      chapters.map((chapter) =>
-        this.prismaService.practiceCourseChapter.create({
-          data: {
-            chapterId: chapter?.id,
-            practiceCourseId: practiceCourse?.id,
-          },
-        }),
-      ),
+      chapters
+        .filter((chapter) => chapter != null)
+        .map((chapter) =>
+          this.prismaService.practiceCourseChapter.create({
+            data: {
+              chapterId: chapter?.id,
+              practiceCourseId: practiceCourse?.id,
+            },
+          }),
+        ),
     );
     return practiceCourse?.id;
+  }
+
+  getHistories(userId: string) {
+    return this.prismaService.examHistory.findMany({
+      where: {
+        userId,
+      },
+      include: {
+        exam: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
   }
 }

@@ -27,6 +27,10 @@ export class ExamController {
   ) {
     return this.examService.submitExam(user.id, examId, dto?.result, dto?.time);
   }
+  @Get('/history')
+  getHistories(@GetUser() user: Payload) {
+    return this.examService.getHistories(user?.id);
+  }
   @Get('/history/:historyId')
   @Public()
   getHistoryExam(@Param('historyId') historyId: string) {
@@ -50,6 +54,7 @@ export class ExamController {
   ) {
     return this.examService.receiveCoursePractive(historyId, user?.id);
   }
+
   @Post()
   create(@Body() createExamDto: CreateExamDto, @GetUser() user: Payload) {
     return this.examService.create(createExamDto, user.id);
