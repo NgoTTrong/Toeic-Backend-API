@@ -66,7 +66,7 @@ export class CourseService {
     };
   }
   async getAllCoursesByUserId(
-    userId: string,
+    userId?: string,
     categoryId?: string,
     title?: string,
   ) {
@@ -98,7 +98,6 @@ export class CourseService {
         createdAt: 'desc',
       },
     });
-
     const coursesWithUserProgress = await Promise.all(
       courses.map(async (course) => {
         if (course.payment.length == 0) {
