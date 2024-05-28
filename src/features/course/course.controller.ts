@@ -33,13 +33,14 @@ export class CourseController {
   }
 
   @Get('all')
+  @Public()
   getAllByUser(
     @Query('categoryId') categoryId: string,
     @Query('title') title: string,
-    @GetUser() user: Payload,
+    @Query('userId') userId: string,
   ) {
     return this.courseService.getAllCoursesByUserId(
-      user.id,
+      userId,
       categoryId ? categoryId : undefined,
       title,
     );
