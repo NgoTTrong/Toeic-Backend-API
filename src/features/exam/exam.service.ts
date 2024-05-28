@@ -649,103 +649,10 @@ export class ExamService {
         },
       },
     });
-    let flattenQuestion: (Question & { topic: Topic })[] = [];
-    flattenQuestion = exam?.part1
-      ? exam?.part1?.part1Questions?.map((e) => e?.question)
-      : [...flattenQuestion];
-    flattenQuestion = exam?.part2
-      ? [
-          ...flattenQuestion,
-          ...exam?.part2?.part2Questions?.map((e) => e?.question),
-        ]
-      : [...flattenQuestion];
-    flattenQuestion = exam?.part3
-      ? [
-          ...flattenQuestion,
-          ...exam?.part3?.part3Questions?.reduce(
-            (arr, e) => [
-              ...arr,
-              ...e?.groupPart3Questions?.map((e) => e?.question),
-            ],
-            [],
-          ),
-        ]
-      : [...flattenQuestion];
-    flattenQuestion = exam?.part4
-      ? [
-          ...flattenQuestion,
-          ...exam?.part4?.part4Questions?.reduce(
-            (arr, e) => [
-              ...arr,
-              ...e?.groupPart4Questions?.map((e) => e?.question),
-            ],
-            [],
-          ),
-        ]
-      : [...flattenQuestion];
-    flattenQuestion = exam?.part5
-      ? [
-          ...flattenQuestion,
-          ...exam?.part5?.part5Questions?.map((e) => e?.question),
-        ]
-      : [...flattenQuestion];
-    flattenQuestion = exam?.part6
-      ? [
-          ...flattenQuestion,
-          ...exam?.part6?.part6Questions?.reduce(
-            (arr, e) => [
-              ...arr,
-              ...e?.groupPart6Questions?.map((e) => e?.question),
-            ],
-            [],
-          ),
-        ]
-      : [...flattenQuestion];
-    flattenQuestion = exam?.part7
-      ? [
-          ...flattenQuestion,
-          ...exam?.part7?.part7Questions?.reduce(
-            (arr, e) => [
-              ...arr,
-              ...e?.groupPart7Questions?.map((e) => e?.question),
-            ],
-            [],
-          ),
-        ]
-      : [...flattenQuestion];
 
-    let wrongTopics: { topicId: string; name: string }[] = [];
-    let numOfCorrects = 0;
-    for (let i = 0; i < _history?.result.length; i++) {
-      const idx = flattenQuestion.findIndex(
-        (e) => e?.id == (_history?.result[i] as any)?.questionId,
-      );
-      if (idx != -1) {
-        numOfCorrects +=
-          flattenQuestion[idx]?.answer == (_history?.result[i] as any)?.option
-            ? 1
-            : 0;
-        if (
-          flattenQuestion[idx]?.answer != (_history?.result[i] as any)?.option
-        ) {
-          if (
-            !wrongTopics.some(
-              (e) => e?.topicId == flattenQuestion?.[idx]?.topicId,
-            )
-          ) {
-            wrongTopics.push({
-              topicId: flattenQuestion?.[idx]?.topicId,
-              name: flattenQuestion?.[idx]?.topic?.name,
-            });
-          }
-        }
-      }
-    }
     return {
       exam,
       history: _history,
-      numOfCorrects,
-      wrongTopics,
     };
   }
   async getRandomChapter(topicId: string) {
