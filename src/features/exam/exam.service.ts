@@ -524,7 +524,29 @@ export class ExamService {
         ]
       : [...flattenQuestion];
 
-    let numOfCorrects: number = 0;
+    let wrongTopics: { topicId: string; name: string }[] = [];
+    let numOfCorrects = 0;
+    for (let i = 0; i < result.length; i++) {
+      const idx = flattenQuestion.findIndex(
+        (e) => e?.id == (result[i] as any)?.questionId,
+      );
+      if (idx != -1) {
+        numOfCorrects +=
+          flattenQuestion[idx]?.answer == (result[i] as any)?.option ? 1 : 0;
+        if (flattenQuestion[idx]?.answer != (result[i] as any)?.option) {
+          if (
+            !wrongTopics.some(
+              (e) => e?.topicId == flattenQuestion?.[idx]?.topicId,
+            )
+          ) {
+            wrongTopics.push({
+              topicId: flattenQuestion?.[idx]?.topicId,
+              name: flattenQuestion?.[idx]?.topic?.name,
+            });
+          }
+        }
+      }
+    }
     for (let i = 0; i < result.length; i++) {
       const idx = flattenQuestion.findIndex(
         (e) => e?.id == (result[i] as any)?.questionId,
@@ -540,6 +562,7 @@ export class ExamService {
         examId,
         result,
         numOfCorrects,
+        wrongTopics,
         time,
         score: Math.floor(
           (numOfCorrects * 1000) /
