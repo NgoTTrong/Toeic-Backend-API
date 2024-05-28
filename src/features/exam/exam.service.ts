@@ -547,15 +547,7 @@ export class ExamService {
         }
       }
     }
-    for (let i = 0; i < result.length; i++) {
-      const idx = flattenQuestion.findIndex(
-        (e) => e?.id == (result[i] as any)?.questionId,
-      );
-      if (idx != -1) {
-        numOfCorrects +=
-          flattenQuestion[idx]?.answer == (result[i] as any)?.option ? 1 : 0;
-      }
-    }
+
     return this.prismaService.examHistory.create({
       data: {
         userId,
