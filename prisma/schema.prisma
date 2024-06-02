@@ -585,11 +585,14 @@ model ChapterQuestion {
 }
 
 model Payment {
-  id       String @id @default(uuid())
-  userId   String
-  courseId String
-  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id            String  @id @default(uuid())
+  userId        String
+  courseId      String
+  transactionId String?
+  status        String?
+  isComplete    Boolean @default(false)
+  course        Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user          User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, courseId])
   @@index([courseId])
@@ -680,11 +683,11 @@ model GroupPostComment {
 }
 
 model PracticeCourse {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  userId    String
-  name      String?
-  thumbnail String?
+  id                    String                  @id @default(uuid())
+  createdAt             DateTime                @default(now())
+  userId                String
+  name                  String?
+  thumbnail             String?
   point                 Int?                    @default(100)
   user                  User                    @relation(fields: [userId], references: [id])
   PracticeCourseChapter PracticeCourseChapter[]

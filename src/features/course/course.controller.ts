@@ -16,6 +16,7 @@ import { Payload } from 'src/core/type/jwt.payload';
 import { AttachmentCourseDto } from './dto/attachment-course.dto';
 import { ChapterDto } from './dto/chapter.dto';
 import { ReorderDto } from './dto/reorder.dto';
+import { CallbackPaymentDto } from './dto/callback-payment.dto';
 
 @Controller('course')
 export class CourseController {
@@ -53,6 +54,14 @@ export class CourseController {
   ) {
     return this.courseService.findOneByUser(courseId, user.id);
   }
+
+  @Post('callback-payment')
+  @Public()
+  callbackPaymentMiniapp(@Body() dto: CallbackPaymentDto) {
+    console.log('CallbackPaymentDto', dto);
+    return this.courseService.handleCallbackPayment(dto.data, dto.mac);
+  }
+
   @Get()
   getAllCourse(@GetUser() user: Payload) {
     return this.courseService.getAll(user.id);

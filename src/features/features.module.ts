@@ -22,6 +22,7 @@ import { FlashCardModule } from './flashcard/flashcard.module';
 import { GroupModule } from './group/group.module';
 import { LeaderboardModule } from './leaderboard/leaderboard.module';
 import { PracticeCourseModule } from './practice-course/practice-course.module';
+import { SocketModule } from 'src/core/socket/socket.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { PracticeCourseModule } from './practice-course/practice-course.module';
     ChatbotModule,
     LeaderboardModule,
     PracticeCourseModule,
+    SocketModule,
   ],
   controllers: [],
   providers: [],

@@ -5,12 +5,16 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { ChapterDto } from './dto/chapter.dto';
 import { Course } from '@prisma/client';
 import { UserProgressService } from '../user-progress/user-progress.service';
+import * as CryptoJS from 'crypto-js';
+import { environments } from 'src/environments';
+import { SocketService } from 'src/core/socket/socket.service';
 
 @Injectable()
 export class CourseService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly userProgressService: UserProgressService,
+    private readonly socketService: SocketService,
   ) {}
   create(createCourseDto: CreateCourseDto, userId: string) {
     return this.prismaService.course.create({
@@ -243,5 +247,45 @@ export class CourseService {
         }),
       ),
     );
+  }
+
+  async handleCallbackPayment(data: string, reqMac: string) {
+    const mac = CryptoJS.HmacSHA256(data, environments.zalopayKey2).toString();
+    if (reqMac != mac) {
+      return {
+        return_code: -1,
+        return_message: 'Mac not equal.',
+      };
+    } else {
+      const dataJson = JSON.parse(data);
+      const _payment = await this.prismaService.payment.findFirst({
+        where: {
+          transactionId: dataJson?.app_trans_id,
+        },
+      });
+      this.socketService.socket.emit('payment-success', _payment?.id);
+
+      if (_payment) {
+        await this.prismaService.payment.update({
+          where: {
+            id: _payment?.id,
+          },
+          data: {
+            status: 'PAID',
+            isComplete: true,
+          },
+        });
+
+        return {
+          return_code: 1,
+          return_message: 'success',
+        };
+      } else {
+        return {
+          return_code: -1,
+          return_message: 'TransID not existed',
+        };
+      }
+    }
   }
 }
