@@ -3,11 +3,9 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
   OnGatewayInit,
-  SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { User } from '@prisma/client';
 
 import { Server } from 'socket.io';
 import { Socket } from 'socket.io-client';
@@ -15,12 +13,7 @@ import { SocketService } from 'src/core/socket/socket.service';
 
 @WebSocketGateway({
   cors: {
-    origin: [
-      'localhost:3000',
-      'localhost:3001',
-      'localhost:2999',
-      'toeic-mastery-rho.vercel.app',
-    ],
+    origin: ['localhost:3000', 'toeic-mastery-rho.vercel.app'],
     credentials: true,
     transports: ['websocket', 'polling'],
     secure: true,
@@ -37,6 +30,7 @@ export class Gateway
   @WebSocketServer() io: Server;
   afterInit(server: Server) {
     this.socketService.socket = server;
+    console.log('Init');
   }
 
   handleDisconnect(client: Socket) {
