@@ -104,7 +104,7 @@ export class PaymentService {
       }),
       amount: amount,
       callback_url:
-        'https://toeic-backend-api.onrender.com/course/callback-payment',
+        'https://toeic-backend-api-1.onrender.com/course/callback-payment',
       description: `Toeic Mastery - Payment for the order #${transId}`,
       bank_code: bankCode ?? '',
       mac: '',

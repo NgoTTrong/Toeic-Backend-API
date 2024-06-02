@@ -97,8 +97,6 @@ export class CourseService {
         payment: {
           where: {
             userId,
-            isComplete: true,
-            status: 'PAID',
           },
         },
       },
