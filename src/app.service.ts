@@ -4,7 +4,7 @@ import * as dayjs from 'dayjs';
 @Injectable()
 export class AppService {
   date = Date();
-
+  //fix
   getHello(): string {
     return `Lasted version release at --- ${dayjs(this.date)
       .add(7, 'hour')
