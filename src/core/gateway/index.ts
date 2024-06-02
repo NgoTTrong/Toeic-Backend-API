@@ -15,7 +15,12 @@ import { SocketService } from 'src/core/socket/socket.service';
 
 @WebSocketGateway({
   cors: {
-    origin: ['http://localhost:3000', 'https://toeic-mastery-rho.vercel.app'],
+    origin: [
+      'localhost:3000',
+      'localhost:3001',
+      'localhost:2999',
+      'toeic-mastery-rho.vercel.app',
+    ],
     credentials: true,
     transports: ['websocket', 'polling'],
     secure: true,
