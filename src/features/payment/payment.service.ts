@@ -45,7 +45,7 @@ export class PaymentService {
         },
       });
     }
-    return this.createZaloPaySesstion(
+    const zaloOrder = this.createZaloPaySesstion(
       payment?.id,
       ['zalopay_wallet'],
       [
@@ -58,6 +58,10 @@ export class PaymentService {
       payment?.course?.price,
       '',
     );
+    return {
+      zaloOrder,
+      payment,
+    };
   }
 
   generateTransId(paymentId: string) {
