@@ -33,6 +33,8 @@ export class CourseService {
     const purchaseCourses = await this.prismaService.payment.findMany({
       where: {
         userId,
+        isComplete: true,
+        status: 'PAID',
       },
       include: {
         course: {
@@ -95,6 +97,8 @@ export class CourseService {
         payment: {
           where: {
             userId,
+            isComplete: true,
+            status: 'PAID',
           },
         },
       },

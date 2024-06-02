@@ -23,6 +23,7 @@ import { GroupModule } from './group/group.module';
 import { LeaderboardModule } from './leaderboard/leaderboard.module';
 import { PracticeCourseModule } from './practice-course/practice-course.module';
 import { SocketModule } from 'src/core/socket/socket.module';
+import { Gateway } from 'src/core/gateway';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { SocketModule } from 'src/core/socket/socket.module';
     ExamCategoryModule,
     FlashCardModule,
     GroupModule,
+    Gateway,
     ChatbotModule,
     LeaderboardModule,
     PracticeCourseModule,

@@ -10,6 +10,8 @@ import axios from 'axios';
 import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 type Purchase = Course & { total: number };
+import { nanoid, customAlphabet } from 'nanoid';
+
 @Injectable()
 export class PaymentService {
   constructor(
@@ -75,7 +77,9 @@ export class PaymentService {
     amount: number,
     bankCode: string,
   ) {
-    const transId = this.generateTransId(paymentId).slice(0, 40);
+    const nanoid = customAlphabet('1234567890abcdef', 10);
+
+    const transId = this.generateTransId(nanoid()).slice(0, 40);
 
     const payment = await this.prismaService.payment.update({
       where: {

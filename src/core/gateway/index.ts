@@ -3,17 +3,17 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
   OnGatewayInit,
+  SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-
 import { Server } from 'socket.io';
 import { Socket } from 'socket.io-client';
 import { SocketService } from 'src/core/socket/socket.service';
 
 @WebSocketGateway({
   cors: {
-    origin: ['localhost:3000', 'toeic-mastery-rho.vercel.app'],
+    origin: ['http://localhost:3000', 'https://toeic-mastery-rho.vercel.app'],
     credentials: true,
     transports: ['websocket', 'polling'],
     secure: true,
@@ -29,8 +29,9 @@ export class Gateway
 
   @WebSocketServer() io: Server;
   afterInit(server: Server) {
+    console.log('Init start');
     this.socketService.socket = server;
-    console.log('Init');
+    console.log('Init End');
   }
 
   handleDisconnect(client: Socket) {
