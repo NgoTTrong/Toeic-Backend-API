@@ -42,6 +42,8 @@ export class ChapterService {
       where: {
         courseId,
         userId,
+        isComplete: true,
+        status: 'PAID',
       },
     });
     const course = await this.prismaService.course.findFirst({
