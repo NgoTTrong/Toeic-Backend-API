@@ -255,6 +255,7 @@ export class CourseService {
 
   async handleCallbackPayment(data: string, reqMac: string) {
     const mac = CryptoJS.HmacSHA256(data, environments.zalopayKey2).toString();
+    console.log('mac', mac);
     if (reqMac != mac) {
       return {
         return_code: -1,
@@ -262,6 +263,7 @@ export class CourseService {
       };
     } else {
       const dataJson = JSON.parse(data);
+      console.log('dataJson', dataJson);
       const _payment = await this.prismaService.payment.findFirst({
         where: {
           transactionId: dataJson?.app_trans_id,
