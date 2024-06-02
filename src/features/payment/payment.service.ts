@@ -45,7 +45,7 @@ export class PaymentService {
         },
       });
     }
-    const zaloOrder = this.createZaloPaySesstion(
+    const zaloOrder = await this.createZaloPaySesstion(
       payment?.id,
       ['zalopay_wallet'],
       [
